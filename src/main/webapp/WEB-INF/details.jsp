@@ -38,6 +38,8 @@
 		<form action="/addToCart" method="post">
 		<input type="hidden" name="itemId" value="${item.id}">
 		<input type="submit" value="Add to cart"></form>
+		<br>
+		${message}
 
     </div>
 

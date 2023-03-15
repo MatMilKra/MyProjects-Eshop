@@ -34,6 +34,7 @@ public class ProfileController {
 	@GetMapping("/")
 	public String goIndex(ModelMap model) {
 		checkInfo(model);
+		checkUserLogged(model);
 
 		return "index";
 	}

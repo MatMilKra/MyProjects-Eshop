@@ -9,23 +9,11 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400;600;700&family=Nunito:wght@300;500;700;800&family=Sono:wght@200;300;400;500;600;700;800&display=swap"
 	rel="stylesheet">
-<style>
-<%@
-include
- 
-file
-="/
-WEB-INF
-/
-css
-/
-style
-.css
-"%
->
-</style>
-S
-<title>Konto użytkownika</title>
+
+<style><%@include file="/WEB-INF/css/style.css"%></style>
+
+
+<title>User's account</title>
 </head>
 <body>
 

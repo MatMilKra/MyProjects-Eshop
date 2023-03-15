@@ -57,7 +57,6 @@ public class ShopItemsController {
 
 	public void setCategories(ModelMap model) {
 		model.addAttribute("categories", categories);
-		setCategories(model);
 
 	}
 
