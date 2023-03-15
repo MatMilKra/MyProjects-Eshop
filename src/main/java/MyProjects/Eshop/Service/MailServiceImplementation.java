@@ -37,46 +37,54 @@ public class MailServiceImplementation implements MailService {
 	}
 
 	String emailNote = "example@wp.pl";
+	String host = "smtp.wp.pl";
+	String login = "exampleLogin";
+	String password = "examplePassword";
 
+	/**
+	 * To make this method working, you must change emailNote, host, login and password for correct.
+	 * Probably you should also change SNTP port in properties inside the method.
+	 */
 	@Override
 	public void sendMail(String to, String subject, String body) {
-		String from = emailNote; 
-		String host = "smtp.wp.pl";
-
-		Properties properties = new Properties();
-		properties.put("mail.smtp.host", host);
-		properties.put("mail.smtp.port", "465");
-		properties.put("mail.smtp.ssl.enable", "true");
-		properties.put("mail.smtp.auth", "true");
-
-		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.EnableSSL.enable", "true");
-
-		properties.put("mail.debug", "true");
-
-		properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		properties.setProperty("mail.smtp.socketFactory.fallback", "false");
-		properties.setProperty("mail.smtp.port", "465");
-		properties.setProperty("mail.smtp.sender.address", from);
-		properties.setProperty("mail.smtp.socketFactory.port", "465");
-
-		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("login","password");
-			}
-		});
-
-		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(from));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject(subject);
-			message.setText(body);
-
-			Transport.send(message);
-		} catch (MessagingException mex) {
-			mex.printStackTrace();
-		}
+		
+		
+//		String from = emailNote; 
+//
+//		Properties properties = new Properties();
+//		properties.put("mail.smtp.host", host);
+//		properties.put("mail.smtp.port", "465");
+//		properties.put("mail.smtp.ssl.enable", "true");
+//		properties.put("mail.smtp.auth", "true");
+//
+//		properties.put("mail.smtp.starttls.enable", "true");
+//		properties.put("mail.smtp.EnableSSL.enable", "true");
+//
+//		properties.put("mail.debug", "true");
+//
+//		properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//		properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+//		properties.setProperty("mail.smtp.port", "465");
+//		properties.setProperty("mail.smtp.sender.address", from);
+//		properties.setProperty("mail.smtp.socketFactory.port", "465");
+//
+//		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+//			protected PasswordAuthentication getPasswordAuthentication() {
+//				return new PasswordAuthentication(login,password);
+//			}
+//		});
+//
+//		try {
+//			MimeMessage message = new MimeMessage(session);
+//			message.setFrom(new InternetAddress(from));
+//			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+//			message.setSubject(subject);
+//			message.setText(body);
+//
+//			Transport.send(message);
+//		} catch (MessagingException mex) {
+//			mex.printStackTrace();
+//		}
 
 	}
 
