@@ -1,0 +1,55 @@
+#container {
+	float: left;
+	margin-bottom: 10px;
+	width: 90%;
+	padding-top: 30px;
+}
+
+
+#menu ul {
+	list-style: none;
+	margin: 0;
+	height: 50px;
+	padding: 0px 0px 0px 0px;
+}
+
+#menu li {
+	display: block;
+	float: left;
+	font-family: Arial;
+	color: rgb(106, 215, 70);
+	margin-left: 15px;	
+	margin-top: 15px;
+	
+
+}
+
+.header_wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  text-align: center;
+  margin: 5px auto;
+}
+
+.search_field{
+	margin-top: 30px;
+	width: 80%;
+}
+
+.search_tab{
+	width: 80%;
+}
+
+.search_tab_small{
+	width: 400px;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.to_right{
+	text-align: right;
+}
