@@ -9,11 +9,6 @@ import MyProjects.Eshop.Repository.UserRepository;
 import MyProjects.Eshop.Service.MailServiceImplementation;
 
 
-/*
-@EnableJpaRepositories("KochanySwidry")
-@ComponentScan(basePackages = { "KochanySwidry" })
-@EntityScan("KochanySwidry") 
-*/
 @SpringBootApplication
 public class App {
 

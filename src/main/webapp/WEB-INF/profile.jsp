@@ -9,8 +9,8 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400;600;700&family=Nunito:wght@300;500;700;800&family=Sono:wght@200;300;400;500;600;700;800&display=swap"
 	rel="stylesheet">
-
 <style><%@include file="/WEB-INF/css/style.css"%></style>
+
 
 
 <title>User's account</title>
@@ -18,12 +18,12 @@
 <body>
 
 	<%@include file="header.jsp"%>
+	<%@include file="profilePanel.jsp"%>
 	<div id="container">
 
 
 
-		<a href="/logout">Log out</a> <br> <a href="/add">add</a> <br>
-	</div>
+	
 	<c:if test="${checkInfo}">
 		<div class=center>
 			<form action="/admin/panel" method="get">
@@ -41,12 +41,12 @@
 
 
 		<tr>
-			<td><label for="firstname">Imię: </label></td>
+			<td><label for="firstname">First name: </label></td>
 			<td>${userFirstName}</td>
 		</tr>
 
 		<tr>
-			<td><label for="lastname">Nazwisko: </label></td>
+			<td><label for="lastname">Last name: </label></td>
 			<td>${userLastName}</td>
 		</tr>
 		<tr>
@@ -55,28 +55,13 @@
 		</tr>
 
 		<tr>
-			<td><label for="telephone">Telefon: </label></td>
+			<td><label for="telephone">Telephone: </label></td>
 			<td>${userPhoneNumber}</td>
 	</table>
 	<br>
-
-	<form action="/myItems" method="get">
-		<input type="submit" value="See my items">
-	</form>
-	<form action="/myCart" method="get">
-		<input type="submit" value="See my cart">
-	</form>
-	<form action="buyed" method="get">
-		<input type="submit" value="See my cart">
-	</form>
-	<div class="inl">
-		<form action="/goToUpdateProfile" method="post">
-			<input type="submit" value="Edytuj dane">
-
-		</form>
+	
 
 	</div>
-
 
 
 </body>

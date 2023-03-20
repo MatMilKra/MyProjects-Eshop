@@ -10,7 +10,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400;600;700&family=Nunito:wght@300;500;700;800&family=Sono:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style><%@include file="/WEB-INF/css/style.css"%></style>
-<title>Rybki</title>
+<title>Details of ${item.name}</title>
 
 </head>
 <body>
@@ -37,7 +37,12 @@
 		<br>
 		<form action="/addToCart" method="post">
 		<input type="hidden" name="itemId" value="${item.id}">
-		<input type="submit" value="Add to cart"></form>
+		<input type="submit" value="Add to cart">
+		</form>
+		<form action="/newMessage" method="post">
+		<input type="hidden" name="username" value="${item.getVendor().username}">
+		<input type="submit" value="Ask vendor">
+		</form>
 		<br>
 		${message}
 

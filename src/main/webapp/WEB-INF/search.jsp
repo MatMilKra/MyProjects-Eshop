@@ -15,7 +15,7 @@
 <style><%@include file="/WEB-INF/css/style.css"%></style>
 
 
-<title>Rybki</title>
+<title>Search</title>
 
 </head>
 <body>

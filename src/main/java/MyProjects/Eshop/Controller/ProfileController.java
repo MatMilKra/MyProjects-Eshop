@@ -6,10 +6,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import MyProjects.Eshop.Model.User;
-import MyProjects.Eshop.Service.ShopItemService;
 import MyProjects.Eshop.Service.UserService;
 
 @Controller
@@ -80,12 +77,6 @@ public class ProfileController {
 		return "updateProfile";
 	}
 
-	@GetMapping("/admin/panel")
-	public String openPanel(ModelMap model) {
 
-		model.addAttribute("user_isLogged", userService.checkIfUserLogged());
-
-		return "admin/panel";
-	}
 
 }

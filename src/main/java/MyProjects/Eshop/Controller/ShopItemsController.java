@@ -174,18 +174,17 @@ public class ShopItemsController {
 	@PostMapping(value = "/listByVendor")
 	public String listByOwner(ModelMap model, @RequestParam int id) {
 		checkUserLogged(model);
+//		Integer userId=Integer.parseInt(id);
 		User user = userService.findById(id);
-		List<ShopItem> listByVendor = shopItemService.filterByVendor(user);
-		model.addAttribute("listByVendor", listByVendor);
-		return "listByVendor";
+		model.addAttribute("items", shopItemService.filterByVendor(user));
+		return "myItems";
 	}
 
 	@GetMapping(value = "/myItems")
 	public String myItems(ModelMap model) {
 		checkUserLogged(model);
 		User user = userService.getCurrentUser();
-		List<ShopItem> myItems = shopItemService.filterByVendor(user);
-		model.addAttribute("myItems", myItems);
+		model.addAttribute("items", shopItemService.filterByVendor(user));
 		return "myItems";
 	}
 
@@ -230,7 +229,7 @@ public class ShopItemsController {
 
 		User user = userService.getCurrentUser();
 		model.addAttribute("buyed", shopItemService.getBuyed(user));
-		return "myOrders";
+		return "bought";
 	}
 
 	@PostMapping("/deleteFromCart")

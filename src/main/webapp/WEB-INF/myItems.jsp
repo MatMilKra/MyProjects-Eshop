@@ -10,7 +10,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400;600;700&family=Nunito:wght@300;500;700;800&family=Sono:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style><%@include file="/WEB-INF/css/style.css"%></style>
-<title>Rybki</title>
+<title>My items</title>
 
 </head>
 <body>
@@ -28,7 +28,7 @@
 
 				</tr>
 
-				<c:forEach items="${myItems}" var="item">
+				<c:forEach items="${items}" var="item">
 
 					<tr>
 						<td>${item.name}</td>

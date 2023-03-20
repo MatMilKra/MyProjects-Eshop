@@ -120,16 +120,25 @@ public class MailServiceImplementation implements MailService {
 	@Override
 	public void newMessage(String date, String firstName, String lastName, String email, String phoneNumber,
 			String subject, String body) {
-		MessageSend message = new MessageSend(date, firstName, lastName, email, phoneNumber, subject, body);
-		mesRepo.save(message);
+		
 		String subject2 = "Your message has been send";
 		String body2 = "Thank you for your message. We will respond as soon as possible.\n \n"
-				+ message;
+				+ "Date: " + date + "\n" + 
+				"From: " + firstName + " " + lastName + "\n" + 
+				"Email: " + email + "\n" +
+				"Telephone: " + phoneNumber + "\n" +
+				"Subject: " + subject	+ "\n" + 
+				"-----------------------\n " + body;
 
 		sendMail(email, subject2, body2);
 
 		String subject3 = "New message";
-		String body3 = "\n" + message;
+		String body3 = "\n" + "Date: " + date + "\n" + 
+				"From: " + firstName + " " + lastName + "\n" + 
+				"Email: " + email + "\n" +
+				"Telephone: " + phoneNumber + "\n" +
+				"Subject: " + subject	+ "\n" + 
+				"-----------------------\n " + body;
 
 		sendMail(emailNote, subject3, body3);
 	}

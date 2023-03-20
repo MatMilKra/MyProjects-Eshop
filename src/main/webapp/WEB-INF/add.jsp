@@ -14,7 +14,7 @@
 	rel="stylesheet">
 <style><%@include file="/WEB-INF/css/style.css"%></style>
 
-<title>Rybki</title>
+<title>Add item</title>
 
 </head>
 <body>

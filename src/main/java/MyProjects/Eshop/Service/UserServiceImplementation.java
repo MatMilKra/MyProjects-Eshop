@@ -1,5 +1,6 @@
 package MyProjects.Eshop.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
+import MyProjects.Eshop.Model.MessageSend;
+import MyProjects.Eshop.Model.Role;
 import MyProjects.Eshop.Model.User;
+import MyProjects.Eshop.Repository.RoleRepository;
 import MyProjects.Eshop.Repository.UserRepository;
 import MyProjects.Eshop.Security.UserPrincipal;
 
@@ -17,6 +21,14 @@ import MyProjects.Eshop.Security.UserPrincipal;
 public class UserServiceImplementation implements UserService {
 	@Autowired
 	private UserRepository repoUser;
+	@Autowired
+	private RoleRepository repoRole;
+	
+	@Autowired
+	public UserServiceImplementation(UserRepository repoUser, RoleRepository repoRole) {
+		this.repoUser = repoUser;
+		this.repoRole = repoRole;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -98,5 +110,27 @@ public class UserServiceImplementation implements UserService {
 			if (user.get().getRole().getRolename().equals("Admin"))
 				checkInfo = true;
 		model.addAttribute("checkInfo", checkInfo);
+	}
+
+	@Override
+	public Boolean currentUserFrom(MessageSend message) {
+		User user = getCurrentUser();
+		if (message.getFrom() == user)
+			return true;
+		return false;
+	}
+
+	@Override
+	public List<User> findAll() {
+		return repoUser.findAll();
+	}
+	
+	public void setRole(int id, String roleChoose) {
+		if(!roleChoose.isEmpty()) {
+User user = findById(id);
+Role role = repoRole.findByRolename(roleChoose);
+user.setRole(role);
+repoUser.save(user);
+		}
 	}
 }
