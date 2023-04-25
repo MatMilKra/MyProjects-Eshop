@@ -38,7 +38,7 @@ public class ProfileController {
 
 	@GetMapping("/profile")
 	public String goToProfile(ModelMap model) {
-		populateUser(model);
+		userService.populateUser(model);
 		checkInfo(model);
 		checkUserLogged(model);
 		return "profile";
@@ -49,7 +49,7 @@ public class ProfileController {
 		User currUser = userService.getCurrentUser();
 
 		userService.updateUser(user, currUser);
-		populateUser(model);
+		userService.populateUser(model);
 		checkInfo(model);
 		checkUserLogged(model);
 
@@ -57,21 +57,11 @@ public class ProfileController {
 		return "profile";
 	}
 
-	public void populateUser(ModelMap model) {
-		if (userService.checkIfUserLogged()) {
-			User user = userService.getCurrentUser();
-			model.addAttribute("userUsername", user.getUsername());
-			model.addAttribute("userFirstName", user.getFirstName());
-			model.addAttribute("userLastName", user.getLastName());
-			model.addAttribute("userEmail", user.getEmail());
-			model.addAttribute("userPhoneNumber", user.getPhoneNumber());
-		}
 
-	}
 
-	@PostMapping("/goToUpdateProfile")
+	@GetMapping("/goToUpdateProfile")
 	public String goToUpdateProfile(ModelMap model) {
-		populateUser(model);
+		userService.populateUser(model);
 		checkUserLogged(model);
 
 		return "updateProfile";

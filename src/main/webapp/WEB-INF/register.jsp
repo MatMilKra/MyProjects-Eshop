@@ -18,7 +18,7 @@
        <br>
         or fill fields to register:</div></div>
         <br>
-        
+        ${message}
         <form action="/register" method="post">
                 <table class="center">
         

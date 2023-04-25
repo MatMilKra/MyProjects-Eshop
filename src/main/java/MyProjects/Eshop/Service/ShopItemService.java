@@ -36,6 +36,12 @@ public interface ShopItemService {
 
 	void deleteFromCart(int itemId);
 
+
+	Double getTotalPrice(List<ShopItem> myCart);
+
+
+	List<ShopItem> getCartItems(User user);
+
 	
 
 }

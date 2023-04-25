@@ -179,4 +179,17 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		userRepo.save(user);
 	}
 
+	@Override
+	public Double getTotalPrice(List<ShopItem> myCart) {
+		Double totalPrice = 0.0;
+		for (ShopItem item : myCart) {
+			totalPrice += item.getPrice();
+		}		return totalPrice;
+	}
+
+	@Override
+	public List<ShopItem> getCartItems(User user) {
+		return user.getCartItems();
+	}
+
 }

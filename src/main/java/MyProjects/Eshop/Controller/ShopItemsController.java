@@ -24,8 +24,8 @@ public class ShopItemsController {
 
 	@Autowired
 	private ShopItemService shopItemService;
-	@Autowired
-	private ProfileController profileController;
+
+
 
 	@Autowired
 	private UserService userService;
@@ -37,10 +37,15 @@ public class ShopItemsController {
 	public ShopItemsController(ShopItemService service) {
 		this.shopItemService = service;
 	}
+	
+	public void checkInfo(ModelMap model) {
+		userService.checkInfo(model);
+
+	}
 
 	public void checkUserLogged(ModelMap model) {
 
-		profileController.checkUserLogged(model);
+		model.addAttribute("user_isLogged", userService.checkIfUserLogged());
 	}
 
 	static List<String> categories = null;
@@ -61,7 +66,7 @@ public class ShopItemsController {
 	}
 
 	@GetMapping(value = "/add")
-	public String createNewItem(ModelMap model) {
+	public String goToAdd(ModelMap model) {
 		checkUserLogged(model);
 		setCategories(model);
 
@@ -69,7 +74,7 @@ public class ShopItemsController {
 	}
 
 	@PostMapping(value = "/add")
-	public String createNewItem(Authentication authentication, ModelMap model, @RequestParam MultipartFile[] imageFile,
+	public String addeNewItem(Authentication authentication, ModelMap model, @RequestParam MultipartFile[] imageFile,
 			@RequestParam String name, @RequestParam String category, @RequestParam String price,
 			@RequestParam String description, @RequestParam String amount) {
 		checkUserLogged(model);
@@ -165,8 +170,11 @@ public class ShopItemsController {
 		checkUserLogged(model);
 
 		shopItemService.addToCart(model, itemId);
-		goToDetails(model, itemId);
-
+		Optional<ShopItem> item = shopItemService.findById(itemId);
+		if (item.isPresent()) {
+			ShopItem shopItem = item.get();
+			model.addAttribute("item", shopItem);
+		}
 		return "details";
 
 	}
@@ -192,12 +200,10 @@ public class ShopItemsController {
 	public String myCart(ModelMap model) {
 		checkUserLogged(model);
 		User user = userService.getCurrentUser();
-		List<ShopItem> myCart = user.getCartItems();
+		List<ShopItem> myCart = shopItemService.getCartItems(user);
+		Double totalPrice = shopItemService.getTotalPrice(myCart);
 		model.addAttribute("myCart", myCart);
-		Double totalPrice = 0.0;
-		for (ShopItem item : myCart) {
-			totalPrice += item.getPrice();
-		}
+
 		model.addAttribute("totalPrice", totalPrice);
 
 		return "myCart";
@@ -218,7 +224,9 @@ public class ShopItemsController {
 
 		}
 
-		profileController.goToProfile(model);
+		userService.populateUser(model);
+		checkInfo(model);
+		checkUserLogged(model);
 
 		return "profile";
 	}

@@ -133,4 +133,30 @@ user.setRole(role);
 repoUser.save(user);
 		}
 	}
+
+	@Override
+	public boolean checkRegister(ModelMap model, User user, Optional<User> userFromDatabase, String passwordConfirmed) {
+		if (userFromDatabase.isPresent()) {
+			model.addAttribute("message", "This user name already exists");
+			return false;
+		}
+		if (!(user.getPassword().equals(passwordConfirmed))) {
+			model.addAttribute("passwordMessage", "Passwords don't match");
+			return false;
+		}		
+	return true;
+	}
+
+	@Override
+	public void populateUser(ModelMap model) {
+		if (checkIfUserLogged()) {
+			User user = getCurrentUser();
+			model.addAttribute("userUsername", user.getUsername());
+			model.addAttribute("userFirstName", user.getFirstName());
+			model.addAttribute("userLastName", user.getLastName());
+			model.addAttribute("userEmail", user.getEmail());
+			model.addAttribute("userPhoneNumber", user.getPhoneNumber());
+		}
+
+	}
 }

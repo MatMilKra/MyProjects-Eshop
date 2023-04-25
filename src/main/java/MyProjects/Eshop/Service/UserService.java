@@ -39,5 +39,10 @@ public interface UserService extends UserDetailsService
 
 	void setRole(int id, String roleChoose);
 
+	boolean checkRegister(ModelMap model, User user, Optional<User> userFromDatabase, String passwordConfirmed);
+
+	void populateUser(ModelMap model);
+
+
 	
 }

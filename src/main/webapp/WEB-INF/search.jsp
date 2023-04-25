@@ -28,7 +28,7 @@
 	<div id="container">
 
 		<div>
-			<form action="/search" method="post">
+			<form action="/search" method="post" >
 				<input class="search_tab_small" type="text" name="searchTab"
 					placeholder="Find by name or in description"> <select
 					name="category">

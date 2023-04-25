@@ -49,22 +49,11 @@ public class LoginAndRegisterController {
 			ModelMap model) {
 		user.setUsername(user.getUsername().toLowerCase());
 		Optional<User> userFromDatabase = userService.findByUsername(user.getUsername());
-		if (userFromDatabase.isPresent()) {
-			model.addAttribute("message", "This user name already exists");
+		
+		if (!userService.checkRegister(model,user, userFromDatabase, passwordConfirmed)) {
 			return "register";
 		}
-		if (user.getUsername().isEmpty()) {
-			model.addAttribute("message", "Username cannot be empty");
-			return "register";
-		}
-		if (user.getPassword().isEmpty()) {
-			model.addAttribute("message", "Password cannot be empty");
-			return "register";
-		}
-		if (!(user.getPassword().equals(passwordConfirmed))) {
-			model.addAttribute("passwordMessage", "Passwords don't match");
-			return "register";
-		}
+		
 		user.setRole(roleService.findByRoleName("Customer"));
 		user.setPassword(encoder.encode(user.getPassword()));
 		user.setActivateNum(randomNumber_find());

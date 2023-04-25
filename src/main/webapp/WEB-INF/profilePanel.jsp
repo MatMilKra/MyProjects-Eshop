@@ -46,7 +46,7 @@
 				</form>
 			</li>
 			<li>
-				<form action="/goToUpdateProfile" method="post">
+				<form action="/goToUpdateProfile" method="get">
 					<input type="submit" value="Update profile">
 				</form>
 			</li>
