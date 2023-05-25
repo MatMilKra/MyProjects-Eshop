@@ -104,7 +104,9 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin, String priceMax) {
+	public List<ShopItem> findItem(ModelMap model, 
+			String searchTab, String category,
+			String priceMin, String priceMax) {
 		List<ShopItem> items = new ArrayList<>();
 
 		Double doubleMin = 0.0;
