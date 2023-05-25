@@ -20,9 +20,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import MyProjects.Eshop.App;
+import MyProjects.Eshop.Model.Role;
 import MyProjects.Eshop.Model.User;
 import MyProjects.Eshop.Service.RoleService;
 import MyProjects.Eshop.Service.UserService;
@@ -42,6 +44,8 @@ public class test_LoginAndRegistrationController {
 	User user;
 	@MockBean
 	RoleService roleService;
+	@MockBean
+	ModelMap model;
 	
 
 
@@ -57,29 +61,5 @@ public class test_LoginAndRegistrationController {
 		mockMvc.perform(get("/register")).andExpect(status().isOk()).andExpect(view().name("register"));
 	}
 
-//	@Test
-//	@WithMockUser
-//	void test_registerSubmit_false() throws Exception {
-//		User testUser = new User();
-//		testUser.setUsername("test");
-//
-//		User foundUser = new User();
-//		Optional<User> optUser= Optional.of(foundUser);
-//		String pass="pass";
-//String name = "name";
-//when(userService.findByUsername(name)).thenReturn(optUser);
-//
-//		when(userService.checkRegister(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(false);
-//		mockMvc.perform(post("/register")).andExpect(status().isOk()).andExpect(view().name("register"));
-//
-//	}
-//	
-//	@Test
-//	void test_registerSubmit_true() throws Exception {
-//
-//		when(userService.checkRegister(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
-//
-//		mockMvc.perform(post("/register")).andExpect(status().isOk()).andExpect(view().name("activate"));
-//
-//	}
+
 }

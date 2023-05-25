@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -23,11 +24,21 @@ public class UserServiceImplementation implements UserService {
 	private UserRepository repoUser;
 	@Autowired
 	private RoleRepository repoRole;
+//	@Autowired
+//	private PasswordEncoder encoder;
+
+	@Autowired
+	private RoleService roleService;
 	
 	@Autowired
-	public UserServiceImplementation(UserRepository repoUser, RoleRepository repoRole) {
+	public UserServiceImplementation(UserRepository repoUser, RoleRepository repoRole,
+//			, PasswordEncoder encoder,
+			RoleService roleService) {
+		super();
 		this.repoUser = repoUser;
 		this.repoRole = repoRole;
+//		this.encoder = encoder;
+		this.roleService = roleService;
 	}
 
 	@Override
@@ -36,6 +47,8 @@ public class UserServiceImplementation implements UserService {
 		User user = repoUser.findByUsername(usernameNew).orElseThrow(() -> new UsernameNotFoundException(usernameNew));
 		return new UserPrincipal(user);
 	}
+
+	
 
 	@Override
 	public Optional<User> findByUsername(String username) {
@@ -53,6 +66,12 @@ public class UserServiceImplementation implements UserService {
 	public User save(User user) {
 		return repoUser.save(user);
 	}
+	
+	@Override
+	public boolean optionalIsPresent(Optional<User> user) {
+		if(user.isPresent()) return true;
+		return false;
+	}
 
 	@Override
 	public Optional<User> getOptUser() {
@@ -64,7 +83,8 @@ public class UserServiceImplementation implements UserService {
 	public boolean checkIfUserLogged() {
 		Optional<User> user = getOptUser();
 
-		if (user.isPresent())
+//		if (user.isPresent())
+			if(optionalIsPresent(user))
 			return true;
 
 		return false;
@@ -74,7 +94,10 @@ public class UserServiceImplementation implements UserService {
 	@Override
 	public String activateCode(Integer userId, Integer filCode) {
 		Optional<User> user = repoUser.findById(userId);
-		if (user.isPresent()) {
+//		if (user.isPresent()) 
+		if(optionalIsPresent(user))
+
+		{
 
 			User user2 = user.get();
 			if (user2.getActivateNum().equals(filCode)) {
@@ -106,7 +129,9 @@ public class UserServiceImplementation implements UserService {
 	public void checkInfo(ModelMap model) {
 		Optional<User> user = getOptUser();
 		boolean checkInfo = false;
-		if (user.isPresent())
+//		if (user.isPresent())
+		if(optionalIsPresent(user))
+
 			if (user.get().getRole().getRolename().equals("Admin"))
 				checkInfo = true;
 		model.addAttribute("checkInfo", checkInfo);
@@ -136,7 +161,10 @@ repoUser.save(user);
 
 	@Override
 	public boolean checkRegister(ModelMap model, User user, Optional<User> userFromDatabase, String passwordConfirmed) {
-		if (userFromDatabase.isPresent()) {
+//		if (userFromDatabase.isPresent()) 
+			if(optionalIsPresent(userFromDatabase))
+
+		{
 			model.addAttribute("message", "This user name already exists");
 			return false;
 		}
@@ -158,5 +186,28 @@ repoUser.save(user);
 			model.addAttribute("userPhoneNumber", user.getPhoneNumber());
 		}
 
+	}
+
+	@Override
+	public Integer randomNumber_find() {
+		Integer actNum = (int) (Math.random() * 900000 + 100000);
+		return actNum;
+	}
+	
+	@Override
+	public String registerNew(ModelMap model, User user,String passwordConfirmed, String newPass) {
+		Optional<User> userFromDatabase = findByUsername(user.getUsername());
+		
+		if (!checkRegister(model,user, userFromDatabase, passwordConfirmed)) {
+			return "register";
+		}
+		
+		user.setRole(roleService.findByRoleName("Customer"));
+		user.setPassword(newPass);
+		user.setActivateNum(randomNumber_find());
+		save(user);
+		
+		model.addAttribute("userId", user.getId());
+		return "activate";
 	}
 }

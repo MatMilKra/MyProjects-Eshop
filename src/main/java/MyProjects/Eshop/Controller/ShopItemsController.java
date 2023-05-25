@@ -11,6 +11,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,34 +75,19 @@ public class ShopItemsController {
 		return "add";
 	}
 
-	@PostMapping(value = "/add")
+	@RequestMapping(value = "/profileimageupload", headers = "content-type=multipart/*", method = RequestMethod.POST)
 	public String addeNewItem(Authentication authentication, ModelMap model, @RequestParam MultipartFile[] imageFile,
 			@RequestParam String name, @RequestParam String category, @RequestParam String price,
 			@RequestParam String description, @RequestParam String amount) {
 		checkUserLogged(model);
 		setCategories(model);
 
-		Double priceDouble = 0.0;
-		try {
-			priceDouble = Double.parseDouble(price);
-		} catch (NumberFormatException nfe) {
-			model.addAttribute("message", "Invalid price");
-			return "/add";
 
-		}
-
-		Integer amountInt = 0;
-		try {
-			amountInt = Integer.parseInt(amount);
-		} catch (NumberFormatException nfe) {
-			model.addAttribute("message", "Invalid amount");
-			return "/add";
-
-		}
 		User owner = userService.getCurrentUser();
-		shopItemService.createNewItem(name, description, category, priceDouble, amountInt, owner, imageFile);
+		model.addAttribute("message",
+		shopItemService.createNewItem(model, name, description, category, price, amount, owner, imageFile)
+		);
 		populateModel(model);
-		model.addAttribute("message", "Item has been added");
 
 		return "/add";
 	}
@@ -121,27 +108,27 @@ public class ShopItemsController {
 			@RequestParam String priceMin, @RequestParam String priceMax) {
 
 		checkUserLogged(model);
-		Double doubleMin = 0.0;
-		Double doubleMax = 0.0;
-		if (!priceMin.isEmpty()) {
-			try {
-				doubleMin = Double.parseDouble(priceMin);
-			} catch (NumberFormatException nfe) {
-				model.addAttribute("message", "Invalid minimum price");
-				return "/search";
-
-			}
-		}
-		if (!priceMax.isEmpty()) {
-
-			try {
-				doubleMax = Double.parseDouble(priceMax);
-			} catch (NumberFormatException nfe) {
-				model.addAttribute("message", "Invalid maximum price");
-				return "search";
-			}
-		}
-		model.addAttribute("items", shopItemService.findItem(searchTab, category, doubleMin, doubleMax));
+//		Double doubleMin = 0.0;
+//		Double doubleMax = 0.0;
+//		if (!priceMin.isEmpty()) {
+//			try {
+//				doubleMin = Double.parseDouble(priceMin);
+//			} catch (NumberFormatException nfe) {
+//				model.addAttribute("message", "Invalid minimum price");
+//				return "/search";
+//
+//			}
+//		}
+//		if (!priceMax.isEmpty()) {
+//
+//			try {
+//				doubleMax = Double.parseDouble(priceMax);
+//			} catch (NumberFormatException nfe) {
+//				model.addAttribute("message", "Invalid maximum price");
+//				return "search";
+//			}
+//		}
+		model.addAttribute("items", shopItemService.findItem(model, searchTab, category, priceMin, priceMax));
 
 		setCategories(model);
 		return "search";

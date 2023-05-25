@@ -44,8 +44,7 @@ public class test_ShopItemController {
 	UserService userService;
 	@MockBean
 	ModelMap model;
-//	@MockBean
-//	private MultipartFile[] imageFile;
+
 	
 	@Autowired
 	MockMvc mockMvc;
@@ -58,35 +57,32 @@ public class test_ShopItemController {
 		mockMvc.perform(get("/add")).andExpect(status().isOk()).andExpect(view().name("add"));
 	}
 	
-//	@Test
-//	@WithMockUser
-//	void test_addNewItem() throws Exception {
-//		User user = new User();
-//		when(userService.getCurrentUser()).thenReturn(user);
-//		mockMvc.perform(post("/add").param("name", "name").param("categgory", "category").param("price", "20").param("amount","20")
-//				.param("description", "description")).andExpect(status().isOk()).andExpect(view().name("add"));
-//
-//	}
+
 	
 	@Test
 	@WithMockUser
 	void test_search() throws Exception {
 		User user = new User();
 		when(userService.getCurrentUser()).thenReturn(user);
-		mockMvc.perform(get("/add")).andExpect(status().isOk()).andExpect(view().name("add"));
+		mockMvc.perform(get("/search")).andExpect(status().isOk()).andExpect(view().name("search"));
 	}
 	
-//	@Test
-//	@WithMockUser
-//	void test_searchItem() throws Exception {
-//		User user = new User();
-//		ShopItem item = new ShopItem();
-//		List<ShopItem> list = new ArrayList<>();
-//		list.add(item);
-//		when(userService.getCurrentUser()).thenReturn(user);
-//		when(shopItemService.findItem(null,null,null,null)).thenReturn(list);
-//		mockMvc.perform(post("/add")).andExpect(status().isOk()).andExpect(view().name("add"));
-//	}
+	@Test
+	@WithMockUser
+	void test_searchItem_goodInputs() throws Exception {
+		User user = new User();
+		ShopItem item = new ShopItem();
+		List<ShopItem> list = new ArrayList<>();
+		list.add(item);
+		when(userService.getCurrentUser()).thenReturn(user);
+		when(shopItemService.findItem(model, "name","cat","10","20")).thenReturn(list);
+		mockMvc.perform(post("/search")
+				.param("searchTab", "name").param("category", "cat")
+				.param("priceMin", "10").param("priceMax", "20"))
+		.andExpect(status().isOk()).andExpect(view().name("search"));
+	}
+	
+
 	
 	@Test
 	@WithMockUser
@@ -97,7 +93,8 @@ public class test_ShopItemController {
 		Optional<ShopItem> item = Optional.of(item1);
 		when(shopItemService.findById(1)).thenReturn(item);
 		Mockito.doReturn(user).when(userService).getCurrentUser();
-		mockMvc.perform(get("/item/1")).andExpect(status().isOk()).andExpect(model().attribute("item", item.get()))
+		mockMvc.perform(get("/item/1")).andExpect(status().isOk())
+		.andExpect(model().attribute("item", item.get()))
 				.andExpect(view().name("details"));
 	}
 	

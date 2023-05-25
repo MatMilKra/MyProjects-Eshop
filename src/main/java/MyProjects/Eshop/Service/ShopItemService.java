@@ -11,7 +11,7 @@ import MyProjects.Eshop.Model.User;
 
 public interface ShopItemService {
 
-	void createNewItem(String name, String description, String category, Double price, Integer amount, User owner, MultipartFile[] imageFile);
+	String createNewItem(ModelMap model, String name, String description, String category, String price, String amount, User owner, MultipartFile[] imageFile);
 
 
 	List<ShopItem> findAllItems();
@@ -20,7 +20,7 @@ public interface ShopItemService {
 
 	List<ShopItem> filterByVendor(User user);
 
-	List<ShopItem> findItem(String searchTab, String category, Double priceMin, Double priceMax);
+	List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin, String priceMax);
 
 
 	void addToCart(ModelMap model, int id);

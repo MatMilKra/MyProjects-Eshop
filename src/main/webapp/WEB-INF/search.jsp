@@ -42,6 +42,7 @@
 				<input type="submit" value="Search">
 			</form>
 		</div>
+		${message}
 		<table>
 
 			<tr>

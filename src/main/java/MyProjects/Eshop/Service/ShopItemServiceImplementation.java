@@ -39,9 +39,27 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public void createNewItem(String name, String description, String category, Double price, Integer amount,
+	public String createNewItem(ModelMap model, String name, String description, String category, String price, String amount,
 			User owner, MultipartFile[] imageFile) {
-		ShopItem item = new ShopItem(name, description, category, price, amount, owner);
+		String message="";
+		Double priceDouble = 0.0;
+		try {
+			priceDouble = Double.parseDouble(price);
+		} catch (NumberFormatException nfe) {
+			message= "Invalid price";
+			return message;
+
+		}
+
+		Integer amountInt = 0;
+		try {
+			amountInt = Integer.parseInt(amount);
+		} catch (NumberFormatException nfe) {
+			message="Invalid amount";
+			return message;
+
+		}
+		ShopItem item = new ShopItem(name, description, category, priceDouble, amountInt, owner);
 		InputStream inputStream;
 		List<Picture> pictures = new ArrayList<>();
 		for (MultipartFile image : imageFile) {
@@ -61,6 +79,11 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		}
 		item.setPictures(pictures);
 		shopItemRepo.save(item);
+		
+		message="Item has been added";
+
+		
+		return message;
 
 	}
 
@@ -81,8 +104,29 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public List<ShopItem> findItem(String searchTab, String category, Double priceMin, Double priceMax) {
+	public List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin, String priceMax) {
 		List<ShopItem> items = new ArrayList<>();
+
+		Double doubleMin = 0.0;
+		Double doubleMax = 0.0;
+		if (!priceMin.isEmpty()) {
+			try {
+				doubleMin = Double.parseDouble(priceMin);
+			} catch (NumberFormatException nfe) {
+				model.addAttribute("message", "Invalid minimum price");
+				return items;
+
+			}
+		}
+		if (!priceMax.isEmpty()) {
+
+			try {
+				doubleMax = Double.parseDouble(priceMax);
+			} catch (NumberFormatException nfe) {
+				model.addAttribute("message", "Invalid maximum price");
+				return items;
+			}
+		}
 		List<ShopItem> help = new ArrayList<>();
 		if (searchTab.isEmpty())
 			items = findAllItems();
@@ -95,12 +139,12 @@ public class ShopItemServiceImplementation implements ShopItemService {
 			help = shopItemRepo.findByCategoryContainsIgnoreCase(category);
 			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
 		}
-		if (priceMin > 0) {
-			help = shopItemRepo.findByPriceGreaterThanEqual(priceMin);
+		if (doubleMin > 0) {
+			help = shopItemRepo.findByPriceGreaterThanEqual(doubleMin);
 			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
 		}
-		if (priceMax > 0) {
-			help = shopItemRepo.findByPriceLessThanEqual(priceMax);
+		if (doubleMax > 0) {
+			help = shopItemRepo.findByPriceLessThanEqual(doubleMax);
 			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
 		}
 

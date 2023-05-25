@@ -48,20 +48,16 @@ public class LoginAndRegisterController {
 	public String registerSubmit(@RequestParam String passwordConfirmed, @ModelAttribute("user") User user,
 			ModelMap model) {
 		user.setUsername(user.getUsername().toLowerCase());
-		Optional<User> userFromDatabase = userService.findByUsername(user.getUsername());
+		String newPass = encoder.encode(user.getPassword());
+
+		String returnStr=userService.registerNew(model, user,passwordConfirmed,newPass);
 		
-		if (!userService.checkRegister(model,user, userFromDatabase, passwordConfirmed)) {
-			return "register";
-		}
 		
-		user.setRole(roleService.findByRoleName("Customer"));
-		user.setPassword(encoder.encode(user.getPassword()));
-		user.setActivateNum(randomNumber_find());
-		userService.save(user);
+		if(returnStr.equals("activate"))
+				mailService.sendActivateCode(user.getId());
+
 		
-		mailService.sendActivateCode(user.getId());
-		model.addAttribute("userId", user.getId());
-		return "activate";
+	return returnStr;
 	}
 	
 	@GetMapping("/activate")
@@ -82,10 +78,7 @@ public class LoginAndRegisterController {
 		return returnStr;
 	}
 
-	public Integer randomNumber_find() {
-		Integer actNum = (int) (Math.random() * 900000 + 100000);
-		return actNum;
-	}
+
 
 
 }
