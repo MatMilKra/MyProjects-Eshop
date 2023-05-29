@@ -28,7 +28,7 @@
 
 				</tr>
 
-				<c:forEach items="${myItems}" var="item">
+				<c:forEach items="${bought}" var="item">
 
 					<tr>
 						<td>${item.name}</td>

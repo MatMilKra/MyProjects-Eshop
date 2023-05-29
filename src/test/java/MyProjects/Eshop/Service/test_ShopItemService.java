@@ -14,12 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.ModelMap;
 
 import MyProjects.Eshop.Model.ShopItem;
 import MyProjects.Eshop.Model.User;
 import MyProjects.Eshop.Repository.ShopItemRepository;
+import MyProjects.Eshop.Repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -30,6 +32,8 @@ public class test_ShopItemService {
 	private UserServiceImplementation userService;
 	@MockBean
 	private ShopItemRepository shopRepo;
+	@MockBean
+	private UserRepository userRepo;
 	@MockBean
 	ModelMap model;
 	
@@ -119,5 +123,19 @@ List<ShopItem> find = shopService.getBuyed(user);
 assertEquals(items, find);
 		
 	}
+	
+//	This test doesn't work, because UsernameNotFoundException
+//	@Test
+//	@WithMockUser
+//	public void test_addToCart() {
+//		ShopItem item = new ShopItem();
+//		item.setVendor(user);
+//		item.setAmount(10);
+//		Optional<ShopItem> opt=Optional.of(item);
+//		Mockito.when(shopService.findById(Mockito.anyInt())).thenReturn(opt);
+//		User current=new User();
+//		Mockito.when(userService.getCurrentUser()).thenReturn(current);
+//		Mockito.verify(shopRepo).save(item);
+//	}
 	
 }

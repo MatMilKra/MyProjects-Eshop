@@ -218,12 +218,12 @@ public class ShopItemsController {
 		return "profile";
 	}
 
-	@PostMapping("/buyed")
+	@PostMapping("/bought")
 	public String seeMyOrdersPost(ModelMap model) {
 		checkUserLogged(model);
 
 		User user = userService.getCurrentUser();
-		model.addAttribute("buyed", shopItemService.getBuyed(user));
+		model.addAttribute("bought", shopItemService.getBuyed(user));
 		return "bought";
 	}
 

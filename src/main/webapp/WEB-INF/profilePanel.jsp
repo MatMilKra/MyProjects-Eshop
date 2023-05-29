@@ -36,7 +36,7 @@
 				</form>
 			</li>
 			<li>
-				<form action="/buyed" method="get">
+				<form action="bought" method="post">
 					<input type="submit" value="Buyed items">
 				</form>
 			</li>

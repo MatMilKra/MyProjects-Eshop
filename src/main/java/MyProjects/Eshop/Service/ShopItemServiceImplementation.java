@@ -189,11 +189,12 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		User user = userServ.getCurrentUser();
 
 		List<ShopItem> cart = user.getCartItems();
+		List<ShopItem> bought = user.getBuyedIytems();
 		ShopItem item = new ShopItem();
 		for (int i = 0; i < cart.size(); i++) {
 			item = cart.get(i);
-			user.buy(item);
-			user.getCartItems().remove(item);
+			bought.add(item);
+			cart.remove(item);
 			item.setAmount(item.getAmount() - 1);
 			shopItemRepo.save(item);
 		}
