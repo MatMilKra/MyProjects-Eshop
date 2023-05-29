@@ -62,7 +62,7 @@ mesRepo.save(message);
 
 	@Override
 	public void setMessage(ModelMap model, MessageSend message, Boolean currentUserFrom) {
-		if (currentUserFrom) {
+		if (!currentUserFrom) {
 			model.addAttribute("userFrom", message.getFrom());
 			model.addAttribute("userTo", message.getTo());
 			model.addAttribute("fromTo", "To");
