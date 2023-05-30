@@ -48,16 +48,26 @@ public class LoginAndRegisterController {
 	public String registerSubmit(@RequestParam String passwordConfirmed, @ModelAttribute("user") User user,
 			ModelMap model) {
 		user.setUsername(user.getUsername().toLowerCase());
-		String newPass = encoder.encode(user.getPassword());
+		
 
-		String returnStr=userService.registerNew(model, user,passwordConfirmed,newPass);
+		if(userService.alreadyExist(user)) {
+			model.addAttribute("message", "This user name already exists");
+			return "register";
+		}
+		
+		if(!userService.checkPassword(user, passwordConfirmed)) {
+			model.addAttribute("message", "Passwords doesn't match");
+			return "register";
+		}
+		String newPass = encoder.encode(user.getPassword());
+		userService.registerNew(user,newPass);
 		
 		
-		if(returnStr.equals("activate"))
+		model.addAttribute("userId", user.getId());
 				mailService.sendActivateCode(user.getId());
 
 		
-	return returnStr;
+	return "activate";
 	}
 	
 	@GetMapping("/activate")

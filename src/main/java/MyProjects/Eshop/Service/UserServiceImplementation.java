@@ -29,7 +29,7 @@ public class UserServiceImplementation implements UserService {
 
 	@Autowired
 	private RoleService roleService;
-	
+
 	@Autowired
 	public UserServiceImplementation(UserRepository repoUser, RoleRepository repoRole,
 //			, PasswordEncoder encoder,
@@ -48,8 +48,6 @@ public class UserServiceImplementation implements UserService {
 		return new UserPrincipal(user);
 	}
 
-	
-
 	@Override
 	public Optional<User> findByUsername(String username) {
 		return repoUser.findByUsername(username);
@@ -66,10 +64,11 @@ public class UserServiceImplementation implements UserService {
 	public User save(User user) {
 		return repoUser.save(user);
 	}
-	
+
 	@Override
 	public boolean optionalIsPresent(Optional<User> user) {
-		if(user.isPresent()) return true;
+		if (user.isPresent())
+			return true;
 		return false;
 	}
 
@@ -84,7 +83,7 @@ public class UserServiceImplementation implements UserService {
 		Optional<User> user = getOptUser();
 
 //		if (user.isPresent())
-			if(optionalIsPresent(user))
+		if (optionalIsPresent(user))
 			return true;
 
 		return false;
@@ -95,7 +94,7 @@ public class UserServiceImplementation implements UserService {
 	public String activateCode(Integer userId, Integer filCode) {
 		Optional<User> user = repoUser.findById(userId);
 //		if (user.isPresent()) 
-		if(optionalIsPresent(user))
+		if (optionalIsPresent(user))
 
 		{
 
@@ -130,7 +129,7 @@ public class UserServiceImplementation implements UserService {
 		Optional<User> user = getOptUser();
 		boolean checkInfo = false;
 //		if (user.isPresent())
-		if(optionalIsPresent(user))
+		if (optionalIsPresent(user))
 
 			if (user.get().getRole().getRolename().equals("Admin"))
 				checkInfo = true;
@@ -149,31 +148,17 @@ public class UserServiceImplementation implements UserService {
 	public List<User> findAll() {
 		return repoUser.findAll();
 	}
-	
+
 	public void setRole(int id, String roleChoose) {
-		if(!roleChoose.isEmpty()) {
-User user = findById(id);
-Role role = repoRole.findByRolename(roleChoose);
-user.setRole(role);
-repoUser.save(user);
+		if (!roleChoose.isEmpty()) {
+			User user = findById(id);
+			Role role = repoRole.findByRolename(roleChoose);
+			user.setRole(role);
+			repoUser.save(user);
 		}
 	}
 
-	@Override
-	public boolean checkRegister(ModelMap model, User user, Optional<User> userFromDatabase, String passwordConfirmed) {
-//		if (userFromDatabase.isPresent()) 
-			if(optionalIsPresent(userFromDatabase))
 
-		{
-			model.addAttribute("message", "This user name already exists");
-			return false;
-		}
-		if (!(user.getPassword().equals(passwordConfirmed))) {
-			model.addAttribute("passwordMessage", "Passwords don't match");
-			return false;
-		}		
-	return true;
-	}
 
 	@Override
 	public void populateUser(ModelMap model) {
@@ -193,21 +178,34 @@ repoUser.save(user);
 		Integer actNum = (int) (Math.random() * 900000 + 100000);
 		return actNum;
 	}
-	
+
 	@Override
-	public String registerNew(ModelMap model, User user,String passwordConfirmed, String newPass) {
-		Optional<User> userFromDatabase = findByUsername(user.getUsername());
-		
-		if (!checkRegister(model,user, userFromDatabase, passwordConfirmed)) {
-			return "register";
-		}
-		
+	public String registerNew(User user, String newPass) {
+
+
 		user.setRole(roleService.findByRoleName("Customer"));
 		user.setPassword(newPass);
 		user.setActivateNum(randomNumber_find());
 		save(user);
+
 		
-		model.addAttribute("userId", user.getId());
 		return "activate";
+	}
+
+	@Override
+	public boolean alreadyExist(User user) {
+		Optional<User> userFromDatabase = findByUsername(user.getUsername());
+		if (optionalIsPresent(userFromDatabase))
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean checkPassword(User user, String passwordConfirmed) {
+		if (user.getPassword().equals(passwordConfirmed)) {
+			
+			return true;
+		}
+		return false;
 	}
 }

@@ -39,15 +39,18 @@ public interface UserService extends UserDetailsService
 
 	void setRole(int id, String roleChoose);
 
-	boolean checkRegister(ModelMap model, User user, Optional<User> userFromDatabase, String passwordConfirmed);
 
 	void populateUser(ModelMap model);
 
-	String registerNew(ModelMap model, User user,String passwordConfirmed, String newPass);
+	String registerNew(User user,String newPass);
 
 	Integer randomNumber_find();
 
 	boolean optionalIsPresent(Optional<User> user);
+
+	boolean alreadyExist(User user);
+
+	boolean checkPassword(User user, String passwordConfirmed);
 
 
 	
