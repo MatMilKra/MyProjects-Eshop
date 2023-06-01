@@ -3,6 +3,7 @@ package MyProjects.Eshop.Controller;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -60,6 +61,29 @@ public class test_LoginAndRegistrationController {
 
 		mockMvc.perform(get("/register")).andExpect(status().isOk()).andExpect(view().name("register"));
 	}
+	
+	@Test
+	void test_registerSubmit_badUsername() throws Exception {
+		user=new User();
+		user.setPassword(" ");
+		user.setUsername(" ");
+		Mockito.when(userService.alreadyExist(user)).thenReturn(true);
+		mockMvc.perform(post("/register")
+		.param("passwordConfirmed"," ").param("username", " ")).andExpect(status().isOk()).andExpect(view().name("register"));
+	}
+
+	@Test
+	void test_registerSubmit_badPassword() throws Exception {
+		user=new User();
+		user.setPassword(" ");
+		user.setUsername(" ");
+		Mockito.when(userService.alreadyExist(user)).thenReturn(false);
+
+		Mockito.when(userService.checkPassword(user," ")).thenReturn(false);
+		mockMvc.perform(post("/register")
+		.param("passwordConfirmed"," ").param("username", " ").param("passeord", " ")).andExpect(status().isOk()).andExpect(view().name("register"));
+	}
+	
 
 
 }

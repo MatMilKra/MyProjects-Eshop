@@ -202,10 +202,8 @@ public class UserServiceImplementation implements UserService {
 
 	@Override
 	public boolean checkPassword(User user, String passwordConfirmed) {
-		if (user.getPassword().equals(passwordConfirmed)) {
-			
+		if (user.getPassword().equals(passwordConfirmed)) 
 			return true;
-		}
 		return false;
 	}
 }
