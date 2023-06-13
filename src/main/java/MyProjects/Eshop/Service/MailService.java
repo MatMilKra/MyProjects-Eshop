@@ -15,10 +15,7 @@ public interface MailService {
 	void newMessage(String date, String firstName, String lastName, String email, String phoneNumber, String subject,
 			String body);
 
-	void findAll(ModelMap model);
 
-	MessageSend findById(Integer id);
-
-	void sendActivateCode(Integer id);
+	void sendActivateCode(User user);
 
 }

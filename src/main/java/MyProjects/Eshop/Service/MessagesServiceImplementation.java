@@ -50,19 +50,6 @@ public class MessagesServiceImplementation implements MessagesService {
 		return mesRepo.findById(messId).orElse(new MessageSend());
 	}
 
-	@Override
-	public void setMessage(ModelMap model, MessageSend message, Boolean currentUserFrom) {
-		if (!currentUserFrom) {
-			model.addAttribute("userFrom", message.getFrom());
-			model.addAttribute("userTo", message.getTo());
-			model.addAttribute("fromTo", "To");
-		} else {
-			model.addAttribute("userFrom", message.getTo());
-			model.addAttribute("userTo", message.getFrom());
-			model.addAttribute("fromTo", "From");
-		}
-		model.addAttribute("subject", message.getSubject());
-		model.addAttribute("body", message.getBody());
-	}
+
 
 }

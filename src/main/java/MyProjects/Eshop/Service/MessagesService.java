@@ -15,6 +15,5 @@ public interface MessagesService {
 	void sendMessage(User from, User to, String subject, String body);
 	List<MessageSend> findSent(User user);
 	MessageSend findById(Integer messId);
-	void setMessage(ModelMap model, MessageSend message, Boolean currentUserFrom);
 
 }

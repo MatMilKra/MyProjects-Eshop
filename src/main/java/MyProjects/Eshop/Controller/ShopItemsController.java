@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import MyProjects.Eshop.Model.ShopItem;
 import MyProjects.Eshop.Model.User;
+import MyProjects.Eshop.Repository.ShopItemRepository;
 import MyProjects.Eshop.Service.ShopItemService;
 import MyProjects.Eshop.Service.UserService;
 
@@ -155,8 +157,8 @@ public class ShopItemsController {
 	@PostMapping(value = "/addToCart")
 	public String addToCart(ModelMap model, @RequestParam int itemId) {
 		checkUserLogged(model);
-
-		shopItemService.addToCart(model, itemId);
+User user = userService.getCurrentUser();
+		shopItemService.addToCart(model, itemId, user);
 		Optional<ShopItem> item = shopItemService.findById(itemId);
 		if (item.isPresent()) {
 			ShopItem shopItem = item.get();
@@ -199,15 +201,16 @@ public class ShopItemsController {
 	@GetMapping("/buy")
 	public String buy(ModelMap model) {
 		List<ShopItem> noItem = new ArrayList<>();
-
-		noItem = shopItemService.checkAvailable();
+User user = userService.getCurrentUser();
+		noItem = shopItemService.checkAvailable(user);
 		if (noItem.size() >= 1) {
 			model.addAttribute("noItem", noItem);
 			model.addAttribute("message", "Some items are no more available. Please delete from cart:");
 			myCart(model);
 			return "myCart";
 		} else {
-			shopItemService.buy();
+			shopItemService.buy(user);
+			
 
 		}
 

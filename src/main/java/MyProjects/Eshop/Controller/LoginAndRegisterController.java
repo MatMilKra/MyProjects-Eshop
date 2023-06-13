@@ -64,7 +64,7 @@ public class LoginAndRegisterController {
 		
 		
 		model.addAttribute("userId", user.getId());
-				mailService.sendActivateCode(user.getId());
+				mailService.sendActivateCode(user);
 
 		
 	return "activate";

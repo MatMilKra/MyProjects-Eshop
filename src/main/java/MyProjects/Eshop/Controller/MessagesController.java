@@ -108,7 +108,32 @@ public class MessagesController {
 	public String messageDetails(ModelMap model, @RequestParam Integer messId) {
 		MessageSend message = messagesService.findById(messId);
 		Boolean currentUserFrom = userService.currentUserFrom(message);
-		messagesService.setMessage(model, message, currentUserFrom);
+	//	setMessage(model, message, currentUserFrom);
+		if (!currentUserFrom) {
+			model.addAttribute("userFrom", message.getFrom());
+			model.addAttribute("userTo", message.getTo());
+			model.addAttribute("fromTo", "To");
+		} else {
+			model.addAttribute("userFrom", message.getTo());
+			model.addAttribute("userTo", message.getFrom());
+			model.addAttribute("fromTo", "From");
+		}
+		model.addAttribute("subject", message.getSubject());
+		model.addAttribute("body", message.getBody());
 				return "messageDetails";
+	}
+	
+	public void setMessage(ModelMap model, MessageSend message, Boolean currentUserFrom) {
+		if (!currentUserFrom) {
+			model.addAttribute("userFrom", message.getFrom());
+			model.addAttribute("userTo", message.getTo());
+			model.addAttribute("fromTo", "To");
+		} else {
+			model.addAttribute("userFrom", message.getTo());
+			model.addAttribute("userTo", message.getFrom());
+			model.addAttribute("fromTo", "From");
+		}
+		model.addAttribute("subject", message.getSubject());
+		model.addAttribute("body", message.getBody());
 	}
 }

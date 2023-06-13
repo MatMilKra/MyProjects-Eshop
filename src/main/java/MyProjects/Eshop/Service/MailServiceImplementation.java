@@ -98,17 +98,15 @@ public class MailServiceImplementation implements MailService {
 	}
 
 	@Override
-	public void sendActivateCode(Integer userId) {
-		Optional<User> user = repo.findById(userId);
-
-		if (user.isPresent()) {
-			String email = user.get().getEmail();
-			String actCode = user.get().getActivateNum().toString();
+	public void sendActivateCode(User user) {
+	
+			String email = user.getEmail();
+			Integer actCode = user.getActivateNum();
 			String subject = "Activation code";
 			String body = "Your actiation code is: " + actCode;
 
 			sendMail(email, subject, body);
-		}
+		
 	}
 
 
@@ -143,17 +141,7 @@ public class MailServiceImplementation implements MailService {
 		sendMail(emailNote, subject3, body3);
 	}
 
-	@Override
-	public void findAll(ModelMap model) {
-		model.addAttribute("messages", mesRepo.findAll());
-	}
 
-
-
-	@Override
-	public MessageSend findById(Integer id) {
-return mesRepo.findById(id).orElse(new MessageSend());
-	}
 
 
 }

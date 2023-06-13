@@ -1,6 +1,7 @@
 package MyProjects.Eshop.Service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -122,6 +123,21 @@ user.setBuyedIytems(items);
 List<ShopItem> find = shopService.getBuyed(user);
 assertEquals(items, find);
 		
+	}
+	
+	@Test
+	public void test_buy() {
+		User user=new User();
+		ShopItem item = new ShopItem();
+		item.setAmount(2);
+		List<ShopItem> list = new ArrayList<>();
+		List<ShopItem> list2 = new ArrayList<>();
+		list.add(item);
+		user.setCartItems(list);
+		user.setBuyedIytems(list2);
+		shopService.buy(user);
+		Mockito.verify(shopRepo,times(1)).save(item);
+		Mockito.verify(userRepo,times(1)).save(user);
 	}
 	
 //	This test doesn't work, because UsernameNotFoundException

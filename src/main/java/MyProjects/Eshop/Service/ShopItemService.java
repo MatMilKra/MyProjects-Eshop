@@ -23,15 +23,15 @@ public interface ShopItemService {
 	List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin, String priceMax);
 
 
-	void addToCart(ModelMap model, int id);
 
 
-	void buy();
+
+	void buy(User user);
 
 	List<ShopItem> getCart(User user);
 	List<ShopItem> getBuyed(User user);
 
-	List<ShopItem> checkAvailable();
+
 
 
 	void deleteFromCart(int itemId);
@@ -41,6 +41,12 @@ public interface ShopItemService {
 
 
 	List<ShopItem> getCartItems(User user);
+
+
+	List<ShopItem> checkAvailable(User user);
+
+
+	void addToCart(ModelMap model, int id, User user);
 
 	
 

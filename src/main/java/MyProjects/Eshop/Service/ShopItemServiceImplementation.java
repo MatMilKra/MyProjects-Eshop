@@ -154,14 +154,14 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public void addToCart(ModelMap model, int id) {
+	public void addToCart(ModelMap model, int id, User user) {
 		Optional<ShopItem> itemOp = findById(id);
 		ShopItem item = new ShopItem();
 		
 		if (itemOp.isPresent())
 			item = itemOp.get();
 		
-		User user = userServ.getCurrentUser();
+	//	User user = userServ.getCurrentUser();
 		User vendor = item.getVendor();
 		
 		if (vendor == user) {
@@ -185,8 +185,8 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public void buy() {
-		User user = userServ.getCurrentUser();
+	public void buy(User user) {
+		//User user = userServ.getCurrentUser();
 
 		List<ShopItem> cart = user.getCartItems();
 		List<ShopItem> bought = user.getBuyedIytems();
@@ -203,8 +203,8 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public List<ShopItem> checkAvailable() {
-		User user = userServ.getCurrentUser();
+	public List<ShopItem> checkAvailable(User user) {
+		//User user = userServ.getCurrentUser();
 		List<ShopItem> cart = getCart(user);
 		List<ShopItem> noItem = new ArrayList<>();
 		for (ShopItem item : cart) {
@@ -238,5 +238,7 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	public List<ShopItem> getCartItems(User user) {
 		return user.getCartItems();
 	}
+
+
 
 }
