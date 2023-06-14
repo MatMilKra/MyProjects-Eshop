@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import MyProjects.Eshop.App;
 import MyProjects.Eshop.Model.ShopItem;
 import MyProjects.Eshop.Model.User;
+import MyProjects.Eshop.Service.SearchingService;
 import MyProjects.Eshop.Service.ShopItemService;
 import MyProjects.Eshop.Service.UserService;
 
@@ -39,6 +40,9 @@ public class test_ShopItemController {
 	
 	@MockBean 
 	ShopItemService shopItemService;
+	
+	@MockBean 
+	SearchingService searchingService;
 	
 	@MockBean
 	UserService userService;
@@ -75,7 +79,7 @@ public class test_ShopItemController {
 		List<ShopItem> list = new ArrayList<>();
 		list.add(item);
 		when(userService.getCurrentUser()).thenReturn(user);
-		when(shopItemService.findItem(model, "name","cat","10","20")).thenReturn(list);
+		when(searchingService.findItem(model, "name","cat","10","20")).thenReturn(list);
 		mockMvc.perform(post("/search")
 				.param("searchTab", "name").param("category", "cat")
 				.param("priceMin", "10").param("priceMax", "20"))
@@ -91,7 +95,7 @@ public class test_ShopItemController {
 		ShopItem item1 = new ShopItem();
 
 		Optional<ShopItem> item = Optional.of(item1);
-		when(shopItemService.findById(1)).thenReturn(item);
+		when(searchingService.findById(1)).thenReturn(item);
 		Mockito.doReturn(user).when(userService).getCurrentUser();
 		mockMvc.perform(get("/item/1")).andExpect(status().isOk())
 		.andExpect(model().attribute("item", item.get()))
@@ -105,7 +109,7 @@ public class test_ShopItemController {
 		ShopItem item1 = new ShopItem();
 
 		Optional<ShopItem> item = Optional.of(item1);
-		when(shopItemService.findById(10)).thenReturn(item);
+		when(searchingService.findById(10)).thenReturn(item);
 		Mockito.doReturn(user).when(userService).getCurrentUser();
 		mockMvc.perform(post("/addToCart").param("itemId","10")).andExpect(status().isOk())
 		.andExpect(model().attribute("item", item.get()))
@@ -120,7 +124,7 @@ public class test_ShopItemController {
 		List<ShopItem> list = new ArrayList<>();
 		list.add(item);
 		when(userService.findById(10)).thenReturn(user);
-		when(shopItemService.filterByVendor(user)).thenReturn(list);
+		when(searchingService.filterByVendor(user)).thenReturn(list);
 		mockMvc.perform(post("/listByVendor").param("id","10")).andExpect(status().isOk())
 		.andExpect(model().attribute("items", list))
 		.andExpect(view().name("myItems"));
@@ -135,7 +139,7 @@ public class test_ShopItemController {
 		List<ShopItem> list = new ArrayList<>();
 		list.add(item);
 		when(userService.getCurrentUser()).thenReturn(user);
-		when(shopItemService.filterByVendor(user)).thenReturn(list);
+		when(searchingService.filterByVendor(user)).thenReturn(list);
 		mockMvc.perform(get("/myItems")).andExpect(status().isOk())
 		.andExpect(model().attribute("items", list))
 		.andExpect(view().name("myItems"));
@@ -151,7 +155,7 @@ public class test_ShopItemController {
 		List<ShopItem> myCart = new ArrayList<>();
 		myCart.add(item);
 		when(userService.getCurrentUser()).thenReturn(user);
-		when(shopItemService.getCartItems(user)).thenReturn(myCart);
+		when(shopItemService.getCart(user)).thenReturn(myCart);
 		when(shopItemService.getTotalPrice(myCart)).thenReturn(totalPrice);
 		mockMvc.perform(get("/myCart")).andExpect(status().isOk())
 		.andExpect(model().attribute("myCart", myCart))

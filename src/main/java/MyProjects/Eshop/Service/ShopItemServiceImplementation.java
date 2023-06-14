@@ -87,79 +87,79 @@ public class ShopItemServiceImplementation implements ShopItemService {
 
 	}
 
+//	@Override
+//	public List<ShopItem> findAllItems() {
+//
+//		return shopItemRepo.findAll();
+//	}
+//
+//	@Override
+//	public Optional<ShopItem> findById(int id) {
+//		return shopItemRepo.findById(id);
+//	}
+//
+//	@Override
+//	public List<ShopItem> filterByVendor(User user) {
+//		return shopItemRepo.findByVendor(user);
+//	}
+
+//	@Override
+//	public List<ShopItem> findItem(ModelMap model, 
+//			String searchTab, String category,
+//			String priceMin, String priceMax) {
+//		List<ShopItem> items = new ArrayList<>();
+//
+//		Double doubleMin = 0.0;
+//		Double doubleMax = 0.0;
+//		if (!priceMin.isEmpty()) {
+//			try {
+//				doubleMin = Double.parseDouble(priceMin);
+//			} catch (NumberFormatException nfe) {
+//				model.addAttribute("message", "Invalid minimum price");
+//				return items;
+//
+//			}
+//		}
+//		if (!priceMax.isEmpty()) {
+//
+//			try {
+//				doubleMax = Double.parseDouble(priceMax);
+//			} catch (NumberFormatException nfe) {
+//				model.addAttribute("message", "Invalid maximum price");
+//				return items;
+//			}
+//		}
+//		List<ShopItem> help = new ArrayList<>();
+//		if (searchTab.isEmpty())
+//			items = findAllItems();
+//		else {
+//			items = shopItemRepo.findByNameContainsIgnoreCase(searchTab);
+//			items.addAll(shopItemRepo.findByDescriptionContainsIgnoreCase(searchTab));
+//			items = items.stream().distinct().collect(Collectors.toList());
+//		}
+//		if (!category.isEmpty()) {
+//			help = shopItemRepo.findByCategoryContainsIgnoreCase(category);
+//			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
+//		}
+//		if (doubleMin > 0) {
+//			help = shopItemRepo.findByPriceGreaterThanEqual(doubleMin);
+//			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
+//		}
+//		if (doubleMax > 0) {
+//			help = shopItemRepo.findByPriceLessThanEqual(doubleMax);
+//			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
+//		}
+//
+//		return items;
+//	}
+
 	@Override
-	public List<ShopItem> findAllItems() {
-
-		return shopItemRepo.findAll();
-	}
-
-	@Override
-	public Optional<ShopItem> findById(int id) {
-		return shopItemRepo.findById(id);
-	}
-
-	@Override
-	public List<ShopItem> filterByVendor(User user) {
-		return shopItemRepo.findByVendor(user);
-	}
-
-	@Override
-	public List<ShopItem> findItem(ModelMap model, 
-			String searchTab, String category,
-			String priceMin, String priceMax) {
-		List<ShopItem> items = new ArrayList<>();
-
-		Double doubleMin = 0.0;
-		Double doubleMax = 0.0;
-		if (!priceMin.isEmpty()) {
-			try {
-				doubleMin = Double.parseDouble(priceMin);
-			} catch (NumberFormatException nfe) {
-				model.addAttribute("message", "Invalid minimum price");
-				return items;
-
-			}
-		}
-		if (!priceMax.isEmpty()) {
-
-			try {
-				doubleMax = Double.parseDouble(priceMax);
-			} catch (NumberFormatException nfe) {
-				model.addAttribute("message", "Invalid maximum price");
-				return items;
-			}
-		}
-		List<ShopItem> help = new ArrayList<>();
-		if (searchTab.isEmpty())
-			items = findAllItems();
-		else {
-			items = shopItemRepo.findByNameContainsIgnoreCase(searchTab);
-			items.addAll(shopItemRepo.findByDescriptionContainsIgnoreCase(searchTab));
-			items = items.stream().distinct().collect(Collectors.toList());
-		}
-		if (!category.isEmpty()) {
-			help = shopItemRepo.findByCategoryContainsIgnoreCase(category);
-			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-		}
-		if (doubleMin > 0) {
-			help = shopItemRepo.findByPriceGreaterThanEqual(doubleMin);
-			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-		}
-		if (doubleMax > 0) {
-			help = shopItemRepo.findByPriceLessThanEqual(doubleMax);
-			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-		}
-
-		return items;
-	}
-
-	@Override
-	public void addToCart(ModelMap model, int id, User user) {
-		Optional<ShopItem> itemOp = findById(id);
-		ShopItem item = new ShopItem();
-		
-		if (itemOp.isPresent())
-			item = itemOp.get();
+	public void addToCart(ModelMap model, User user, ShopItem item) {
+//		Optional<ShopItem> itemOp = findById(id);
+//		ShopItem item = new ShopItem();
+//		
+//		if (itemOp.isPresent())
+//			item = itemOp.get();
 		
 	//	User user = userServ.getCurrentUser();
 		User vendor = item.getVendor();
@@ -217,12 +217,12 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public void deleteFromCart(int itemId) {
+	public void deleteFromCart(ShopItem item) {
 		User user = userServ.getCurrentUser();
 
-		Optional<ShopItem> itemOp = findById(itemId);
-		if (itemOp.isPresent())
-			user.getCartItems().remove(itemOp.get());
+//		Optional<ShopItem> itemOp = findById(itemId);
+//		if (itemOp.isPresent())
+			user.getCartItems().remove(item);
 		userRepo.save(user);
 	}
 
@@ -234,10 +234,10 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		}		return totalPrice;
 	}
 
-	@Override
-	public List<ShopItem> getCartItems(User user) {
-		return user.getCartItems();
-	}
+//	@Override
+//	public List<ShopItem> getCartItems(User user) {
+//		return user.getCartItems();
+//	}
 
 
 

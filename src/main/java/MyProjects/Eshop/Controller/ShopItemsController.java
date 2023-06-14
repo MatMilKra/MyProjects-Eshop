@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import MyProjects.Eshop.Model.ShopItem;
 import MyProjects.Eshop.Model.User;
 import MyProjects.Eshop.Repository.ShopItemRepository;
+import MyProjects.Eshop.Service.SearchingService;
 import MyProjects.Eshop.Service.ShopItemService;
 import MyProjects.Eshop.Service.UserService;
 
@@ -29,7 +30,8 @@ public class ShopItemsController {
 	@Autowired
 	private ShopItemService shopItemService;
 
-
+	@Autowired
+	private SearchingService searchingService;
 
 	@Autowired
 	private UserService userService;
@@ -130,7 +132,7 @@ public class ShopItemsController {
 //				return "search";
 //			}
 //		}
-		model.addAttribute("items", shopItemService.findItem(model, searchTab, category, priceMin, priceMax));
+		model.addAttribute("items", searchingService.findItem(model, searchTab, category, priceMin, priceMax));
 
 		setCategories(model);
 		return "search";
@@ -139,13 +141,13 @@ public class ShopItemsController {
 
 
 	private void populateModel(ModelMap model) {
-		model.addAttribute("items", shopItemService.findAllItems());
+		model.addAttribute("items", searchingService.findAllItems());
 	}
 
 	@GetMapping(value = "/item/{id}")
 	public String goToDetails(ModelMap model, @PathVariable int id) {
 		checkUserLogged(model);
-		Optional<ShopItem> item = shopItemService.findById(id);
+		Optional<ShopItem> item = searchingService.findById(id);
 		if (item.isPresent()) {
 			ShopItem shopItem = item.get();
 			model.addAttribute("item", shopItem);
@@ -158,12 +160,16 @@ public class ShopItemsController {
 	public String addToCart(ModelMap model, @RequestParam int itemId) {
 		checkUserLogged(model);
 User user = userService.getCurrentUser();
-		shopItemService.addToCart(model, itemId, user);
-		Optional<ShopItem> item = shopItemService.findById(itemId);
-		if (item.isPresent()) {
-			ShopItem shopItem = item.get();
-			model.addAttribute("item", shopItem);
-		}
+//ShopItem item = searchingService.getItem(itemId);
+Optional<ShopItem> itemOp = searchingService.findById(itemId);
+if (itemOp.isPresent()) {
+	ShopItem item = itemOp.get();
+	model.addAttribute("item", item);
+	shopItemService.addToCart(model, user, item);
+}
+
+		
+	
 		return "details";
 
 	}
@@ -173,7 +179,7 @@ User user = userService.getCurrentUser();
 		checkUserLogged(model);
 //		Integer userId=Integer.parseInt(id);
 		User user = userService.findById(id);
-		model.addAttribute("items", shopItemService.filterByVendor(user));
+		model.addAttribute("items", searchingService.filterByVendor(user));
 		return "myItems";
 	}
 
@@ -181,7 +187,7 @@ User user = userService.getCurrentUser();
 	public String myItems(ModelMap model) {
 		checkUserLogged(model);
 		User user = userService.getCurrentUser();
-		model.addAttribute("items", shopItemService.filterByVendor(user));
+		model.addAttribute("items", searchingService.filterByVendor(user));
 		return "myItems";
 	}
 
@@ -189,7 +195,7 @@ User user = userService.getCurrentUser();
 	public String myCart(ModelMap model) {
 		checkUserLogged(model);
 		User user = userService.getCurrentUser();
-		List<ShopItem> myCart = shopItemService.getCartItems(user);
+		List<ShopItem> myCart = shopItemService.getCart(user);
 		Double totalPrice = shopItemService.getTotalPrice(myCart);
 		model.addAttribute("myCart", myCart);
 
@@ -233,7 +239,8 @@ User user = userService.getCurrentUser();
 	@PostMapping("/deleteFromCart")
 	public String deleteFromCart(ModelMap model, @RequestParam int itemId) {
 		checkUserLogged(model);
-		shopItemService.deleteFromCart(itemId);
+		ShopItem item = searchingService.getItem(itemId);
+		shopItemService.deleteFromCart(item);
 		return "myCart";
 	}
 }

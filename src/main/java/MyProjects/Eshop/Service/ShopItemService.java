@@ -14,13 +14,13 @@ public interface ShopItemService {
 	String createNewItem(ModelMap model, String name, String description, String category, String price, String amount, User owner, MultipartFile[] imageFile);
 
 
-	List<ShopItem> findAllItems();
-
-	Optional<ShopItem> findById(int id);
-
-	List<ShopItem> filterByVendor(User user);
-
-	List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin, String priceMax);
+//	List<ShopItem> findAllItems();
+//
+//	Optional<ShopItem> findById(int id);
+//
+//	List<ShopItem> filterByVendor(User user);
+//
+//	List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin, String priceMax);
 
 
 
@@ -34,19 +34,19 @@ public interface ShopItemService {
 
 
 
-	void deleteFromCart(int itemId);
+	void deleteFromCart(ShopItem item);
 
 
 	Double getTotalPrice(List<ShopItem> myCart);
 
 
-	List<ShopItem> getCartItems(User user);
+//	List<ShopItem> getCartItems(User user);
 
 
 	List<ShopItem> checkAvailable(User user);
 
 
-	void addToCart(ModelMap model, int id, User user);
+	void addToCart(ModelMap model, User user, ShopItem item);
 
 	
 

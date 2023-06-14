@@ -46,66 +46,7 @@ public class test_ShopItemService {
 		user=new User();
 	}
 	
-	@Test
-	public void test_findAall() {
-		shopService.findAllItems();
-		Mockito.verify(shopRepo).findAll();
-	}
-	
-	@Test
-	public void test_findById() {
-		int id = 1;
-		shopService.findById(id);
-		Mockito.verify(shopRepo).findById(id);
-		
-	}
-	
-	@Test
-	public void test_filterByVendor() {
-		shopService.filterByVendor(user);
-		Mockito.verify(shopRepo).findByVendor(user);
-	}
-	@Test
-	public void test_findItem() {
-		String searchTab="searchTab"; 
-		String category="Guitar";
-		String priceMin="10";
-		Double priceMinD=Double.parseDouble(priceMin);
-		String priceMax="20";
-		Double priceMaxD=Double.parseDouble(priceMax);
 
-		ShopItem item = new ShopItem();
-		List<ShopItem> items = new ArrayList<>();
-		//items.add(item);
-		when(shopRepo.findByNameContainsIgnoreCase(searchTab)).thenReturn(items);
-		Mockito.when(shopRepo.findByDescriptionContainsIgnoreCase(searchTab)).thenReturn(items);
-		Mockito.when(shopRepo.findByCategoryContainsIgnoreCase(category)).thenReturn(items);
-		Mockito.when(shopRepo.findByPriceGreaterThanEqual(priceMinD)).thenReturn(items);
-		Mockito.when(shopRepo.findByPriceLessThanEqual(priceMaxD)).thenReturn(items);
-List<ShopItem> find = shopService.findItem(model, searchTab, category, priceMin, priceMax);
-assertEquals(items,find);
-	}
-	
-	@Test
-	public void test_findItem_badPriceMin() {
-		String searchTab="searchTab"; 
-		String category="Guitar";
-		String priceMin="xyz";
-		String priceMax="20";
-		List<ShopItem> items = new ArrayList<>();
-		List<ShopItem> find = shopService.findItem(model, searchTab, category, priceMin, priceMax);
-		assertEquals(items,find);
-	}
-	@Test
-	public void test_findItem_badPriceMax() {
-		String searchTab="searchTab"; 
-		String category="Guitar";
-		String priceMin="10";
-		String priceMax="xyz";
-		List<ShopItem> items = new ArrayList<>();
-		List<ShopItem> find = shopService.findItem(model, searchTab, category, priceMin, priceMax);
-		assertEquals(items,find);
-	}
 	
 	@Test
 	public void test_getCart() {
