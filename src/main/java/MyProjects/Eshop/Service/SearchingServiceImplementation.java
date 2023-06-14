@@ -12,11 +12,12 @@ import org.springframework.ui.ModelMap;
 import MyProjects.Eshop.Model.ShopItem;
 import MyProjects.Eshop.Model.User;
 import MyProjects.Eshop.Repository.ShopItemRepository;
+
 @Service
 public class SearchingServiceImplementation implements SearchingService {
-	
+
 	private ShopItemRepository shopItemRepo;
-	
+
 	@Autowired
 	public SearchingServiceImplementation(ShopItemRepository shopItemRepo) {
 		super();
@@ -40,9 +41,8 @@ public class SearchingServiceImplementation implements SearchingService {
 	}
 
 	@Override
-	public List<ShopItem> findItem(ModelMap model, 
-			String searchTab, String category,
-			String priceMin, String priceMax) {
+	public List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin,
+			String priceMax) {
 		List<ShopItem> items = new ArrayList<>();
 
 		Double doubleMin = 0.0;
@@ -93,11 +93,12 @@ public class SearchingServiceImplementation implements SearchingService {
 	public ShopItem getItem(int id) {
 		Optional<ShopItem> itemOp = findById(id);
 		ShopItem item = new ShopItem();
-		
+
 		if (itemOp.isPresent()) {
 			item = itemOp.get();
-		return item;}
-		
+			return item;
+		}
+
 		return new ShopItem();
 	}
 

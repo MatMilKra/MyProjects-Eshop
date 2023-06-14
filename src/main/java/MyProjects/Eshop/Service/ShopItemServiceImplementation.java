@@ -39,14 +39,14 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public String createNewItem(ModelMap model, String name, String description, String category, String price, String amount,
-			User owner, MultipartFile[] imageFile) {
-		String message="";
+	public String createNewItem(ModelMap model, String name, String description, String category, String price,
+			String amount, User owner, MultipartFile[] imageFile) {
+		String message = "";
 		Double priceDouble = 0.0;
 		try {
 			priceDouble = Double.parseDouble(price);
 		} catch (NumberFormatException nfe) {
-			message= "Invalid price";
+			message = "Invalid price";
 			return message;
 
 		}
@@ -55,7 +55,7 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		try {
 			amountInt = Integer.parseInt(amount);
 		} catch (NumberFormatException nfe) {
-			message="Invalid amount";
+			message = "Invalid amount";
 			return message;
 
 		}
@@ -79,91 +79,18 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		}
 		item.setPictures(pictures);
 		shopItemRepo.save(item);
-		
-		message="Item has been added";
 
-		
+		message = "Item has been added";
+
 		return message;
 
 	}
 
-//	@Override
-//	public List<ShopItem> findAllItems() {
-//
-//		return shopItemRepo.findAll();
-//	}
-//
-//	@Override
-//	public Optional<ShopItem> findById(int id) {
-//		return shopItemRepo.findById(id);
-//	}
-//
-//	@Override
-//	public List<ShopItem> filterByVendor(User user) {
-//		return shopItemRepo.findByVendor(user);
-//	}
-
-//	@Override
-//	public List<ShopItem> findItem(ModelMap model, 
-//			String searchTab, String category,
-//			String priceMin, String priceMax) {
-//		List<ShopItem> items = new ArrayList<>();
-//
-//		Double doubleMin = 0.0;
-//		Double doubleMax = 0.0;
-//		if (!priceMin.isEmpty()) {
-//			try {
-//				doubleMin = Double.parseDouble(priceMin);
-//			} catch (NumberFormatException nfe) {
-//				model.addAttribute("message", "Invalid minimum price");
-//				return items;
-//
-//			}
-//		}
-//		if (!priceMax.isEmpty()) {
-//
-//			try {
-//				doubleMax = Double.parseDouble(priceMax);
-//			} catch (NumberFormatException nfe) {
-//				model.addAttribute("message", "Invalid maximum price");
-//				return items;
-//			}
-//		}
-//		List<ShopItem> help = new ArrayList<>();
-//		if (searchTab.isEmpty())
-//			items = findAllItems();
-//		else {
-//			items = shopItemRepo.findByNameContainsIgnoreCase(searchTab);
-//			items.addAll(shopItemRepo.findByDescriptionContainsIgnoreCase(searchTab));
-//			items = items.stream().distinct().collect(Collectors.toList());
-//		}
-//		if (!category.isEmpty()) {
-//			help = shopItemRepo.findByCategoryContainsIgnoreCase(category);
-//			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-//		}
-//		if (doubleMin > 0) {
-//			help = shopItemRepo.findByPriceGreaterThanEqual(doubleMin);
-//			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-//		}
-//		if (doubleMax > 0) {
-//			help = shopItemRepo.findByPriceLessThanEqual(doubleMax);
-//			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-//		}
-//
-//		return items;
-//	}
-
 	@Override
 	public void addToCart(ModelMap model, User user, ShopItem item) {
-//		Optional<ShopItem> itemOp = findById(id);
-//		ShopItem item = new ShopItem();
-//		
-//		if (itemOp.isPresent())
-//			item = itemOp.get();
-		
-	//	User user = userServ.getCurrentUser();
+
 		User vendor = item.getVendor();
-		
+
 		if (vendor == user) {
 			model.addAttribute("message", "This is your item. You cannot buy it.");
 		} else if (item.getAmount() <= 0) {
@@ -186,7 +113,6 @@ public class ShopItemServiceImplementation implements ShopItemService {
 
 	@Override
 	public void buy(User user) {
-		//User user = userServ.getCurrentUser();
 
 		List<ShopItem> cart = user.getCartItems();
 		List<ShopItem> bought = user.getBuyedIytems();
@@ -204,7 +130,6 @@ public class ShopItemServiceImplementation implements ShopItemService {
 
 	@Override
 	public List<ShopItem> checkAvailable(User user) {
-		//User user = userServ.getCurrentUser();
 		List<ShopItem> cart = getCart(user);
 		List<ShopItem> noItem = new ArrayList<>();
 		for (ShopItem item : cart) {
@@ -220,9 +145,7 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	public void deleteFromCart(ShopItem item) {
 		User user = userServ.getCurrentUser();
 
-//		Optional<ShopItem> itemOp = findById(itemId);
-//		if (itemOp.isPresent())
-			user.getCartItems().remove(item);
+		user.getCartItems().remove(item);
 		userRepo.save(user);
 	}
 
@@ -231,14 +154,8 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		Double totalPrice = 0.0;
 		for (ShopItem item : myCart) {
 			totalPrice += item.getPrice();
-		}		return totalPrice;
+		}
+		return totalPrice;
 	}
-
-//	@Override
-//	public List<ShopItem> getCartItems(User user) {
-//		return user.getCartItems();
-//	}
-
-
 
 }

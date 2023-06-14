@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -43,7 +42,7 @@ public class ShopItemsController {
 	public ShopItemsController(ShopItemService service) {
 		this.shopItemService = service;
 	}
-	
+
 	public void checkInfo(ModelMap model) {
 		userService.checkInfo(model);
 
@@ -86,11 +85,9 @@ public class ShopItemsController {
 		checkUserLogged(model);
 		setCategories(model);
 
-
 		User owner = userService.getCurrentUser();
 		model.addAttribute("message",
-		shopItemService.createNewItem(model, name, description, category, price, amount, owner, imageFile)
-		);
+				shopItemService.createNewItem(model, name, description, category, price, amount, owner, imageFile));
 		populateModel(model);
 
 		return "/add";
@@ -112,33 +109,12 @@ public class ShopItemsController {
 			@RequestParam String priceMin, @RequestParam String priceMax) {
 
 		checkUserLogged(model);
-//		Double doubleMin = 0.0;
-//		Double doubleMax = 0.0;
-//		if (!priceMin.isEmpty()) {
-//			try {
-//				doubleMin = Double.parseDouble(priceMin);
-//			} catch (NumberFormatException nfe) {
-//				model.addAttribute("message", "Invalid minimum price");
-//				return "/search";
-//
-//			}
-//		}
-//		if (!priceMax.isEmpty()) {
-//
-//			try {
-//				doubleMax = Double.parseDouble(priceMax);
-//			} catch (NumberFormatException nfe) {
-//				model.addAttribute("message", "Invalid maximum price");
-//				return "search";
-//			}
-//		}
+
 		model.addAttribute("items", searchingService.findItem(model, searchTab, category, priceMin, priceMax));
 
 		setCategories(model);
 		return "search";
 	}
-
-
 
 	private void populateModel(ModelMap model) {
 		model.addAttribute("items", searchingService.findAllItems());
@@ -152,24 +128,21 @@ public class ShopItemsController {
 			ShopItem shopItem = item.get();
 			model.addAttribute("item", shopItem);
 		}
-		
+
 		return "details";
 	}
 
 	@PostMapping(value = "/addToCart")
 	public String addToCart(ModelMap model, @RequestParam int itemId) {
 		checkUserLogged(model);
-User user = userService.getCurrentUser();
-//ShopItem item = searchingService.getItem(itemId);
-Optional<ShopItem> itemOp = searchingService.findById(itemId);
-if (itemOp.isPresent()) {
-	ShopItem item = itemOp.get();
-	model.addAttribute("item", item);
-	shopItemService.addToCart(model, user, item);
-}
+		User user = userService.getCurrentUser();
+		Optional<ShopItem> itemOp = searchingService.findById(itemId);
+		if (itemOp.isPresent()) {
+			ShopItem item = itemOp.get();
+			model.addAttribute("item", item);
+			shopItemService.addToCart(model, user, item);
+		}
 
-		
-	
 		return "details";
 
 	}
@@ -177,7 +150,6 @@ if (itemOp.isPresent()) {
 	@PostMapping(value = "/listByVendor")
 	public String listByOwner(ModelMap model, @RequestParam int id) {
 		checkUserLogged(model);
-//		Integer userId=Integer.parseInt(id);
 		User user = userService.findById(id);
 		model.addAttribute("items", searchingService.filterByVendor(user));
 		return "myItems";
@@ -207,7 +179,7 @@ if (itemOp.isPresent()) {
 	@GetMapping("/buy")
 	public String buy(ModelMap model) {
 		List<ShopItem> noItem = new ArrayList<>();
-User user = userService.getCurrentUser();
+		User user = userService.getCurrentUser();
 		noItem = shopItemService.checkAvailable(user);
 		if (noItem.size() >= 1) {
 			model.addAttribute("noItem", noItem);
@@ -216,7 +188,6 @@ User user = userService.getCurrentUser();
 			return "myCart";
 		} else {
 			shopItemService.buy(user);
-			
 
 		}
 
