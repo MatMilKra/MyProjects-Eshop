@@ -92,15 +92,13 @@ public class MessagesController {
 		User from = userService.getCurrentUser();
 		Optional<User> user = userService.findByUsername(username);
 		User to = new User();
-		if (user.isPresent()) {
+		if (userService.optionalIsPresent(user)) {
 			to = user.get();
 			messagesService.sendMessage(from, to, subject, body);
 		} else {
 			model.addAttribute("message", "That user doesn't exist");
-			return "newMessage";
 
 		}
-//		}
 		return "newMessage";
 	}
 
@@ -108,7 +106,7 @@ public class MessagesController {
 	public String messageDetails(ModelMap model, @RequestParam Integer messId) {
 		MessageSend message = messagesService.findById(messId);
 		Boolean currentUserFrom = userService.currentUserFrom(message);
-	//	setMessage(model, message, currentUserFrom);
+		
 		if (!currentUserFrom) {
 			model.addAttribute("userFrom", message.getFrom());
 			model.addAttribute("userTo", message.getTo());
@@ -123,17 +121,5 @@ public class MessagesController {
 				return "messageDetails";
 	}
 	
-	public void setMessage(ModelMap model, MessageSend message, Boolean currentUserFrom) {
-		if (!currentUserFrom) {
-			model.addAttribute("userFrom", message.getFrom());
-			model.addAttribute("userTo", message.getTo());
-			model.addAttribute("fromTo", "To");
-		} else {
-			model.addAttribute("userFrom", message.getTo());
-			model.addAttribute("userTo", message.getFrom());
-			model.addAttribute("fromTo", "From");
-		}
-		model.addAttribute("subject", message.getSubject());
-		model.addAttribute("body", message.getBody());
-	}
+
 }

@@ -11,7 +11,7 @@ import MyProjects.Eshop.Model.User;
 
 public interface ShopItemService {
 
-	String createNewItem(ModelMap model, String name, String description, String category, String price, String amount,
+	void createNewItem(String name, String description, String category, double price, int amount,
 			User owner, MultipartFile[] imageFile);
 
 	void buy(User user);
@@ -20,12 +20,18 @@ public interface ShopItemService {
 
 	List<ShopItem> getBuyed(User user);
 
-	void deleteFromCart(ShopItem item);
+	void deleteFromCart(User user, ShopItem item);
 
 	Double getTotalPrice(List<ShopItem> myCart);
 
 	List<ShopItem> checkAvailable(User user);
 
-	void addToCart(ModelMap model, User user, ShopItem item);
+	String checkVendorAndAvailable(User user, ShopItem item);
+
+	void addToCart(User user, ShopItem item);
+
+	boolean parseDoublePossible(String string);
+
+	boolean parseIntegerPossible(String string);
 
 }

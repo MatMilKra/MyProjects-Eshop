@@ -53,5 +53,6 @@ public interface UserService extends UserDetailsService
 	boolean checkPassword(User user, String passwordConfirmed);
 
 
+
 	
 }

@@ -104,15 +104,48 @@ public class test_ShopItemController {
 	
 	@Test
 	@WithMockUser
-	void test_addToCart() throws Exception {
+	void test_addToCart_accept() throws Exception {
 		User user = new User();
 		ShopItem item1 = new ShopItem();
 
 		Optional<ShopItem> item = Optional.of(item1);
 		when(searchingService.findById(10)).thenReturn(item);
 		Mockito.doReturn(user).when(userService).getCurrentUser();
+		when(shopItemService.checkVendorAndAvailable(user, item1)).thenReturn("accept");
 		mockMvc.perform(post("/addToCart").param("itemId","10")).andExpect(status().isOk())
 		.andExpect(model().attribute("item", item.get()))
+				.andExpect(view().name("details"));
+	}
+	
+	@Test
+	@WithMockUser
+	void test_addToCart_badVendor() throws Exception {
+		User user = new User();
+		ShopItem item1 = new ShopItem();
+
+		Optional<ShopItem> item = Optional.of(item1);
+		when(searchingService.findById(10)).thenReturn(item);
+		Mockito.doReturn(user).when(userService).getCurrentUser();
+		when(shopItemService.checkVendorAndAvailable(user, item1)).thenReturn("vendor");
+		mockMvc.perform(post("/addToCart").param("itemId","10")).andExpect(status().isOk())
+		.andExpect(model().attribute("item", item.get()))
+		.andExpect(model().attribute("message", "This is your item. You cannot buy it."))
+				.andExpect(view().name("details"));
+	}
+	
+	@Test
+	@WithMockUser
+	void test_addToCart_badAmount() throws Exception {
+		User user = new User();
+		ShopItem item1 = new ShopItem();
+
+		Optional<ShopItem> item = Optional.of(item1);
+		when(searchingService.findById(10)).thenReturn(item);
+		Mockito.doReturn(user).when(userService).getCurrentUser();
+		when(shopItemService.checkVendorAndAvailable(user, item1)).thenReturn("amount");
+		mockMvc.perform(post("/addToCart").param("itemId","10")).andExpect(status().isOk())
+		.andExpect(model().attribute("item", item.get()))
+		.andExpect(model().attribute("message", "This item is no longer available."))
 				.andExpect(view().name("details"));
 	}
 	

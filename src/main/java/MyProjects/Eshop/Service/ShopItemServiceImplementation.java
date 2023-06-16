@@ -39,27 +39,32 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public String createNewItem(ModelMap model, String name, String description, String category, String price,
-			String amount, User owner, MultipartFile[] imageFile) {
-		String message = "";
-		Double priceDouble = 0.0;
+	public boolean parseDoublePossible(String string) {
 		try {
-			priceDouble = Double.parseDouble(price);
+			Double.parseDouble(string);
 		} catch (NumberFormatException nfe) {
-			message = "Invalid price";
-			return message;
+			return false;
 
 		}
+		return true;
+	}
 
-		Integer amountInt = 0;
+	@Override
+	public boolean parseIntegerPossible(String string) {
 		try {
-			amountInt = Integer.parseInt(amount);
+			Integer.parseInt(string);
 		} catch (NumberFormatException nfe) {
-			message = "Invalid amount";
-			return message;
+			return false;
 
 		}
-		ShopItem item = new ShopItem(name, description, category, priceDouble, amountInt, owner);
+		return true;
+	}
+
+	@Override
+	public void createNewItem(String name, String description, String category, double price,
+			int amount, User owner, MultipartFile[] imageFile) {
+
+		ShopItem item = new ShopItem(name, description, category, price, amount, owner);
 		InputStream inputStream;
 		List<Picture> pictures = new ArrayList<>();
 		for (MultipartFile image : imageFile) {
@@ -80,25 +85,26 @@ public class ShopItemServiceImplementation implements ShopItemService {
 		item.setPictures(pictures);
 		shopItemRepo.save(item);
 
-		message = "Item has been added";
-
-		return message;
-
 	}
 
 	@Override
-	public void addToCart(ModelMap model, User user, ShopItem item) {
-
+	public String checkVendorAndAvailable(User user, ShopItem item) {
+		String returnStr = "accept";
 		User vendor = item.getVendor();
 
 		if (vendor == user) {
-			model.addAttribute("message", "This is your item. You cannot buy it.");
-		} else if (item.getAmount() <= 0) {
-			model.addAttribute("message", "This item is no longer available");
-		} else {
-			user.addToCart(item);
-			userRepo.save(user);
-		}
+			returnStr = "vendor";
+		} else if (item.getAmount() <= 0)
+			returnStr = "amount";
+		return returnStr;
+	}
+
+	@Override
+	public void addToCart(User user, ShopItem item) {
+
+		user.addToCart(item);
+		userRepo.save(user);
+
 	}
 
 	@Override
@@ -116,14 +122,13 @@ public class ShopItemServiceImplementation implements ShopItemService {
 
 		List<ShopItem> cart = user.getCartItems();
 		List<ShopItem> bought = user.getBuyedIytems();
-		ShopItem item = new ShopItem();
-		for (int i = 0; i < cart.size(); i++) {
-			item = cart.get(i);
-			bought.add(item);
-			cart.remove(item);
+
+		for (ShopItem item : cart) {
 			item.setAmount(item.getAmount() - 1);
+			bought.add(item);
 			shopItemRepo.save(item);
 		}
+		cart.removeAll(cart);
 
 		userRepo.save(user);
 	}
@@ -142,8 +147,7 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	}
 
 	@Override
-	public void deleteFromCart(ShopItem item) {
-		User user = userServ.getCurrentUser();
+	public void deleteFromCart(User user, ShopItem item) {
 
 		user.getCartItems().remove(item);
 		userRepo.save(user);

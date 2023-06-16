@@ -78,7 +78,7 @@ public class ShopItemsController {
 		return "add";
 	}
 
-	@RequestMapping(value = "/profileimageupload", headers = "content-type=multipart/*", method = RequestMethod.POST)
+	@RequestMapping(value = "/add", headers = "content-type=multipart/*", method = RequestMethod.POST)
 	public String addeNewItem(Authentication authentication, ModelMap model, @RequestParam MultipartFile[] imageFile,
 			@RequestParam String name, @RequestParam String category, @RequestParam String price,
 			@RequestParam String description, @RequestParam String amount) {
@@ -86,8 +86,18 @@ public class ShopItemsController {
 		setCategories(model);
 
 		User owner = userService.getCurrentUser();
-		model.addAttribute("message",
-				shopItemService.createNewItem(model, name, description, category, price, amount, owner, imageFile));
+
+		if (!shopItemService.parseDoublePossible(price)) {
+			model.addAttribute("message", "Invalid price");
+			return "/add";
+		} else if (!shopItemService.parseIntegerPossible(amount)) {
+			model.addAttribute("message", "Invalid amount");
+			return "/add";
+		}
+
+		shopItemService.createNewItem(name, description, category, Double.parseDouble(price),
+				Integer.parseInt(amount), owner, imageFile);
+		model.addAttribute("message", "Item has been added");
 		populateModel(model);
 
 		return "/add";
@@ -140,7 +150,16 @@ public class ShopItemsController {
 		if (itemOp.isPresent()) {
 			ShopItem item = itemOp.get();
 			model.addAttribute("item", item);
-			shopItemService.addToCart(model, user, item);
+			String checkVen = shopItemService.checkVendorAndAvailable(user, item);
+
+			if (checkVen.equals("vendor")) {
+				model.addAttribute("message", "This is your item. You cannot buy it.");
+			} else if (checkVen.equals("amount")) {
+				model.addAttribute("message", "This item is no longer available.");
+			} else {
+				shopItemService.addToCart(user, item);
+			}
+
 		}
 
 		return "details";
@@ -210,8 +229,9 @@ public class ShopItemsController {
 	@PostMapping("/deleteFromCart")
 	public String deleteFromCart(ModelMap model, @RequestParam int itemId) {
 		checkUserLogged(model);
+		User user = userService.getCurrentUser();
 		ShopItem item = searchingService.getItem(itemId);
-		shopItemService.deleteFromCart(item);
+		shopItemService.deleteFromCart(user, item);
 		return "myCart";
 	}
 }

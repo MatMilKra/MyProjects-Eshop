@@ -67,9 +67,7 @@ public class UserServiceImplementation implements UserService {
 
 	@Override
 	public boolean optionalIsPresent(Optional<User> user) {
-		if (user.isPresent())
-			return true;
-		return false;
+		return user.isPresent();
 	}
 
 	@Override
@@ -206,4 +204,6 @@ public class UserServiceImplementation implements UserService {
 			return true;
 		return false;
 	}
+
+
 }
