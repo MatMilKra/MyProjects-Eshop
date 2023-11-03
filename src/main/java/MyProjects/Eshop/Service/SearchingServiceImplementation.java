@@ -43,50 +43,54 @@ public class SearchingServiceImplementation implements SearchingService {
 	@Override
 	public List<ShopItem> findItem(ModelMap model, String searchTab, String category, String priceMin,
 			String priceMax) {
-		List<ShopItem> items = new ArrayList<>();
 
-		Double doubleMin = 0.0;
-		Double doubleMax = 0.0;
-		if (!priceMin.isEmpty()) {
-			try {
-				doubleMin = Double.parseDouble(priceMin);
-			} catch (NumberFormatException nfe) {
-				model.addAttribute("message", "Invalid minimum price");
-				return items;
+        List<ShopItem> items = new ArrayList<>();
 
-			}
-		}
-		if (!priceMax.isEmpty()) {
+        Double doubleMin = 0.0;
+        Double doubleMax = 0.0;
+        if (!priceMin.isEmpty()) {
+            try {
+                doubleMin = Double.parseDouble(priceMin);
+            } catch (NumberFormatException nfe) {
+                model.addAttribute("message", "Invalid minimum price");
+                return items;
+            }
+        }
+        if (!priceMax.isEmpty()) {
+            try {
+                doubleMax = Double.parseDouble(priceMax);
+            } catch (NumberFormatException nfe) {
+                model.addAttribute("message", "Invalid maximum price");
+                return items;
+            }
+        }
 
-			try {
-				doubleMax = Double.parseDouble(priceMax);
-			} catch (NumberFormatException nfe) {
-				model.addAttribute("message", "Invalid maximum price");
-				return items;
-			}
-		}
-		List<ShopItem> help = new ArrayList<>();
-		if (searchTab.isEmpty())
-			items = findAllItems();
-		else {
-			items = shopItemRepo.findByNameContainsIgnoreCase(searchTab);
-			items.addAll(shopItemRepo.findByDescriptionContainsIgnoreCase(searchTab));
-			items = items.stream().distinct().collect(Collectors.toList());
-		}
-		if (!category.isEmpty()) {
-			help = shopItemRepo.findByCategoryContainsIgnoreCase(category);
-			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-		}
-		if (doubleMin > 0) {
-			help = shopItemRepo.findByPriceGreaterThanEqual(doubleMin);
-			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-		}
-		if (doubleMax > 0) {
-			help = shopItemRepo.findByPriceLessThanEqual(doubleMax);
-			items = items.stream().distinct().filter(help::contains).collect(Collectors.toList());
-		}
+        if (searchTab.isEmpty()) {
+            items = findAllItems();
+        } else {
+            List<ShopItem> nameMatches = shopItemRepo.findByNameContainsIgnoreCase(searchTab);
+            List<ShopItem> descriptionMatches = shopItemRepo.findByDescriptionContainsIgnoreCase(searchTab);
+            items.addAll(nameMatches);
+            items.addAll(descriptionMatches);
+            items = items.stream().distinct().collect(Collectors.toList());
+        }
 
-		return items;
+        if (!category.isEmpty()) {
+            List<ShopItem> categoryMatches = shopItemRepo.findByCategoryContainsIgnoreCase(category);
+            items = items.stream().distinct().filter(categoryMatches::contains).collect(Collectors.toList());
+        }
+
+        if (doubleMin > 0) {
+            List<ShopItem> minPriceMatches = shopItemRepo.findByPriceGreaterThanEqual(doubleMin);
+            items = items.stream().distinct().filter(minPriceMatches::contains).collect(Collectors.toList());
+        }
+
+        if (doubleMax > 0) {
+            List<ShopItem> maxPriceMatches = shopItemRepo.findByPriceLessThanEqual(doubleMax);
+            items = items.stream().distinct().filter(maxPriceMatches::contains).collect(Collectors.toList());
+        }
+
+        return items;
 	}
 
 	@Override

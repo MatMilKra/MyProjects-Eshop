@@ -36,7 +36,7 @@ public class MailServiceImplementation implements MailService {
 
 	}
 
-	String emailNote = "example@wp.pl";
+	String emailNote = "exampleLogin@wp.pl";
 	String host = "smtp.wp.pl";
 	String login = "exampleLogin";
 	String password = "examplePassword";

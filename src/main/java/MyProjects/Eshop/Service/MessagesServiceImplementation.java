@@ -41,7 +41,8 @@ public class MessagesServiceImplementation implements MessagesService {
 
 	@Override
 	public void sendMessage(User from, User to, String subject, String body) {
-		MessageSend message = new MessageSend(findDate(), from, to, subject, body);
+		 String date = findDate();
+		MessageSend message = new MessageSend(date, from, to, subject, body);
 		mesRepo.save(message);
 	}
 
