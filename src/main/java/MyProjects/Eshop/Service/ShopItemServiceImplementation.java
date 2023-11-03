@@ -65,8 +65,9 @@ public class ShopItemServiceImplementation implements ShopItemService {
 			int amount, User owner, MultipartFile[] imageFile) {
 
 		ShopItem item = new ShopItem(name, description, category, price, amount, owner);
-		InputStream inputStream;
+		
 		List<Picture> pictures = new ArrayList<>();
+		
 		for (MultipartFile image : imageFile) {
 			if (!image.getOriginalFilename().isEmpty()) {
 				Picture picture = new Picture(image.getOriginalFilename());
@@ -74,7 +75,7 @@ public class ShopItemServiceImplementation implements ShopItemService {
 				Path destinationFile = Paths.get(System.getProperty("user.dir"), "src/main/webapp/item-pictures",
 						image.getOriginalFilename());
 				try {
-					inputStream = image.getInputStream();
+					InputStream inputStream = image.getInputStream();
 					Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -128,7 +129,7 @@ public class ShopItemServiceImplementation implements ShopItemService {
 			bought.add(item);
 			shopItemRepo.save(item);
 		}
-		cart.removeAll(cart);
+		cart.clear();
 
 		userRepo.save(user);
 	}
@@ -137,7 +138,9 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	public List<ShopItem> checkAvailable(User user) {
 		List<ShopItem> cart = getCart(user);
 		List<ShopItem> noItem = new ArrayList<>();
+		
 		for (ShopItem item : cart) {
+			
 			if (item.getAmount() <= 0) {
 				noItem.add(item);
 			}
@@ -156,9 +159,11 @@ public class ShopItemServiceImplementation implements ShopItemService {
 	@Override
 	public Double getTotalPrice(List<ShopItem> myCart) {
 		Double totalPrice = 0.0;
+		
 		for (ShopItem item : myCart) {
 			totalPrice += item.getPrice();
 		}
+		
 		return totalPrice;
 	}
 
