@@ -24,20 +24,16 @@ public class UserServiceImplementation implements UserService {
 	private UserRepository repoUser;
 	@Autowired
 	private RoleRepository repoRole;
-//	@Autowired
-//	private PasswordEncoder encoder;
 
 	@Autowired
 	private RoleService roleService;
 
 	@Autowired
 	public UserServiceImplementation(UserRepository repoUser, RoleRepository repoRole,
-//			, PasswordEncoder encoder,
 			RoleService roleService) {
 		super();
 		this.repoUser = repoUser;
 		this.repoRole = repoRole;
-//		this.encoder = encoder;
 		this.roleService = roleService;
 	}
 
@@ -80,7 +76,6 @@ public class UserServiceImplementation implements UserService {
 	public boolean checkIfUserLogged() {
 		Optional<User> user = getOptUser();
 
-//		if (user.isPresent())
 		if (optionalIsPresent(user))
 			return true;
 
@@ -91,11 +86,8 @@ public class UserServiceImplementation implements UserService {
 	@Override
 	public String activateCode(Integer userId, Integer filCode) {
 		Optional<User> user = repoUser.findById(userId);
-//		if (user.isPresent()) 
 		if (optionalIsPresent(user))
-
 		{
-
 			User user2 = user.get();
 			if (user2.getActivateNum().equals(filCode)) {
 				user2.setActivated(true);
@@ -126,7 +118,6 @@ public class UserServiceImplementation implements UserService {
 	public void checkInfo(ModelMap model) {
 		Optional<User> user = getOptUser();
 		boolean checkInfo = false;
-//		if (user.isPresent())
 		if (optionalIsPresent(user))
 
 			if (user.get().getRole().getRolename().equals("Admin"))
