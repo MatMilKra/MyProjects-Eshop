@@ -27,30 +27,4 @@ public class test_MailService {
 
 	// ---------------------------------------------------------------------------------------------
 
-	@Test
-	public void test_sendActivateCode() {
-		User user = new User();
-
-		user.setEmail("a@b.c");
-		user.setActivateNum(123);
-		
-		mailServ.sendActivateCode(user);
-	}
-
-	// ---------------------------------------------------------------------------------------------
-
-	@Test
-	public void test_newMessage() {
-
-		mailServ.newMessage("a", "b", "c", "d@e.f", "g", "h", "i");
-	}
-
-	// ---------------------------------------------------------------------------------------------
-
-	@Test
-	public void test_sensMessage() {
-
-		mailServ.sendMail("d@e.f", "h", "i");
-	}
-
 }

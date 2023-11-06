@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import MyProjects.Eshop.Service.MailService;
 import MyProjects.Eshop.Service.RoleService;
 import MyProjects.Eshop.Service.UserService;
+import MyProjects.Eshop.Model.PreparedMail;
 import MyProjects.Eshop.Model.User;
 
 
@@ -64,12 +65,13 @@ public class LoginAndRegisterController {
 		
 		
 		model.addAttribute("userId", user.getId());
-				mailService.sendActivateCode(user);
+				mailService.sendMail(mailService.prepareActivateCode(user));
 
 		
 	return "activate";
 	}
 	
+
 	@GetMapping("/activate")
 	public String goToActivate(ModelMap model) {
 		model.addAttribute("user_isLogged",	userService.checkIfUserLogged());

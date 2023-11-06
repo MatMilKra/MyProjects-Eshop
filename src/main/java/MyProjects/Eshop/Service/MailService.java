@@ -3,19 +3,21 @@ package MyProjects.Eshop.Service;
 import org.springframework.ui.ModelMap;
 
 import MyProjects.Eshop.Model.MessageSend;
-
+import MyProjects.Eshop.Model.PreparedMail;
 import MyProjects.Eshop.Model.User;
 
 public interface MailService {
 
-	void sendMail(String to, String subject, String body);
+	void sendMail(PreparedMail mail);
 
-	void newUser(User user);
+	PreparedMail newUser(User user);
 
-	void newMessage(String date, String firstName, String lastName, String email, String phoneNumber, String subject,
-			String body);
+	PreparedMail prepareActivateCode(User user);
 
+	PreparedMail newMessageResponse(String date, String firstName, String lastName, String email, String phoneNumber,
+			String subject, String body);
 
-	void sendActivateCode(User user);
+	PreparedMail newMessageInfo(String date, String firstName, String lastName, String email, String phoneNumber,
+			String subject, String body);
 
 }
