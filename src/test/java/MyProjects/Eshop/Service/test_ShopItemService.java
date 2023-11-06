@@ -50,6 +50,8 @@ public class test_ShopItemService {
 	ShopItem item;
 	List<ShopItem> cart;
 
+	// ---------------------------------------------------------------------------------------------
+
 	@BeforeEach
 	public void newUser() {
 		user = new User();
@@ -59,13 +61,16 @@ public class test_ShopItemService {
 		user.setCartItems(cart);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_getCart() {
-//user.setCartItems(cart);
 		List<ShopItem> find = shopService.getCart(user);
 		assertEquals(cart, find);
 
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_getBuyed() {
@@ -77,6 +82,8 @@ public class test_ShopItemService {
 		assertEquals(items, find);
 
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_buy() {
@@ -90,6 +97,8 @@ public class test_ShopItemService {
 		verify(userRepo, times(1)).save(user);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_checkAvailable_amount1_ReturnEmptyList() {
 		item.setAmount(1);
@@ -100,6 +109,8 @@ public class test_ShopItemService {
 		assertEquals(check, actual);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_checkAvailable_amount0_ReturnNonemptyList() {
 		item.setAmount(0);
@@ -108,6 +119,8 @@ public class test_ShopItemService {
 
 		assertEquals(cart, actual);
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_getTotalPrice() {
@@ -121,6 +134,8 @@ public class test_ShopItemService {
 		assertEquals(30.0, actual);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_checkVendorAndAvailable_returnAccept() {
 
@@ -131,6 +146,8 @@ public class test_ShopItemService {
 
 		assertEquals("accept", actual);
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_checkVendorAndAvailable_returnAmount() {
@@ -143,6 +160,8 @@ public class test_ShopItemService {
 		assertEquals("amount", actual);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_checkVendorAndAvailable_returnVendor() {
 		item.setVendor(user);
@@ -153,6 +172,8 @@ public class test_ShopItemService {
 		assertEquals("vendor", actual);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void addToCart() {
 		shopService.addToCart(user, item);
@@ -161,6 +182,8 @@ public class test_ShopItemService {
 
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_deleteFromCart() {
 		shopService.deleteFromCart(user, item);
@@ -168,6 +191,8 @@ public class test_ShopItemService {
 		verify(userRepo).save(user);
 
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_parseDoublePossible_returnFalse() {
@@ -178,6 +203,8 @@ public class test_ShopItemService {
 
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_parseDoublePossible_returnTrue() {
 
@@ -186,6 +213,8 @@ public class test_ShopItemService {
 		assertEquals(true, test);
 
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_parseIntegerossible_returnFalse() {
@@ -196,6 +225,8 @@ public class test_ShopItemService {
 
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_parseIntegerPossible_returnTrue() {
 
@@ -204,6 +235,8 @@ public class test_ShopItemService {
 		assertEquals(true, test);
 
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_createNewItem() throws IOException {

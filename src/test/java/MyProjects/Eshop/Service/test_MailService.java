@@ -13,6 +13,8 @@ public class test_MailService {
 	@InjectMocks
 	private MailServiceImplementation mailServ;
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_newUser() {
 		User user = new User();
@@ -22,6 +24,8 @@ public class test_MailService {
 		user.setPhoneNumber("123");
 		mailServ.newUser(user);
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_sendActivateCode() {
@@ -33,11 +37,15 @@ public class test_MailService {
 		mailServ.sendActivateCode(user);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_newMessage() {
 
 		mailServ.newMessage("a", "b", "c", "d@e.f", "g", "h", "i");
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_sensMessage() {

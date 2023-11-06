@@ -58,17 +58,23 @@ public class test_UserService {
 	ModelMap model;
 	User user;
 
+	// ---------------------------------------------------------------------------------------------
+
 	@BeforeEach
 	void setUp() {
 		user = new User();
 
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_save() {
 		userService.save(user);
 		verify(userRepo).save(user);
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_updateUser() {
@@ -78,6 +84,8 @@ public class test_UserService {
 
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_findById() {
 		userService.findById(1);
@@ -85,10 +93,12 @@ public class test_UserService {
 
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_setRole() {
 		Role role = new Role();
-		 user = new User("a", "b", "c", "d", "e", role);
+		user = new User("a", "b", "c", "d", "e", role);
 		Optional<User> userOp = Optional.of(user);
 
 		when(userRepo.findById(Mockito.anyInt())).thenReturn(userOp);
@@ -96,11 +106,14 @@ public class test_UserService {
 		userService.setRole(1, "role");
 		verify(userRepo).save(user);
 	}
-@WithMockUser
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
 	@Test
 	public void test_loadUserByUsername_UserExists() {
 		String username = "testUser";
-	user.setUsername(username);
+		user.setUsername(username);
 
 		when(userRepo.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -109,6 +122,8 @@ public class test_UserService {
 		assertEquals(username, userDetails.getUsername());
 		verify(userRepo, times(1)).findByUsername(username);
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_loadUserByUsername_UserDoesNotExist() {
@@ -125,6 +140,8 @@ public class test_UserService {
 		verify(userRepo, times(1)).findByUsername(username);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_findByUsername_UserExists() {
 		String username = "testUser";
@@ -139,6 +156,8 @@ public class test_UserService {
 		verify(userRepo, times(1)).findByUsername(username);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_findByUsername_UserDoesNotExist() {
 		String username = "nonExistentUser";
@@ -150,6 +169,8 @@ public class test_UserService {
 		assertFalse(result.isPresent());
 		verify(userRepo, times(1)).findByUsername(username);
 	}
+
+	// ---------------------------------------------------------------------------------------------
 
 	@Test
 	public void test_getCurrentUser_UserExists() {
@@ -171,6 +192,8 @@ public class test_UserService {
 		verify(userRepo, times(1)).findByUsername(username);
 	}
 
+	// ---------------------------------------------------------------------------------------------
+
 	@Test
 	public void test_getCurrentUser_UserDoesNotExist() {
 		String username = "nonExistentUser";
@@ -191,315 +214,359 @@ public class test_UserService {
 		assertEquals(username, exception.getMessage());
 		verify(userRepo, times(1)).findByUsername(username);
 	}
-	
-    @Test
-    public void test_optionalIsPresent_UserExists() {
-       
-        Optional<User> userOptional = Optional.of(user);
-
-        boolean result = userService.optionalIsPresent(userOptional);
-
-        assertTrue(result);
-    }
-
-    @Test
-    public void test_optionalIsPresent_UserDoesNotExist() {
-        Optional<User> userOptional = Optional.empty();
-
-        boolean result = userService.optionalIsPresent(userOptional);
-
-        assertFalse(result);
-    }
-
-    @Test
-    public void test_getOptUser_UserExists() {
-        String username = "testUser";
-        user.setUsername(username);
-
-        SecurityContext securityContext = mock(SecurityContext.class);
-        Authentication authentication = mock(Authentication.class);
-        
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn(username);
-
-        SecurityContextHolder.setContext(securityContext);
-
-        when(userRepo.findByUsername(username)).thenReturn(Optional.of(user));
-
-        Optional<User> result = userService.getOptUser();
-
-        assertTrue(result.isPresent());
-        assertEquals(username, result.get().getUsername());
-        verify(userRepo, times(1)).findByUsername(username);
-    }
-
-    @Test
-    public void test_getOptUser_UserDoesNotExist() {
-        String username = "nonExistentUser";
-        
-        SecurityContext securityContext = mock(SecurityContext.class);
-        Authentication authentication = mock(Authentication.class);
-        
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn(username);
-
-        SecurityContextHolder.setContext(securityContext);
-
-        when(userRepo.findByUsername(username)).thenReturn(Optional.empty());
-
-        Optional<User> result = userService.getOptUser();
-
-        assertFalse(result.isPresent());
-        verify(userRepo, times(1)).findByUsername(username);
-    }
-    
-    @WithMockUser
- @Test
-    public void test_checkIfUserLogged_UserLogged() {
-        Optional<User> userOptional = Optional.of(user);
-        
-        when(userService.getOptUser()).thenReturn(userOptional);
-
-        boolean result = userService.checkIfUserLogged();
-
-        assertTrue(result);
-    }
-@WithMockUser
-    @Test
-    public void test_checkIfUserLogged_UserNotLogged() {
-        Optional<User> userOptional = Optional.empty();
-        
-        when(userService.getOptUser()).thenReturn(userOptional);
-
-        boolean result = userService.checkIfUserLogged();
-
-        assertFalse(result);
-    }
-
-    @Test
-    public void test_activateCode_ActivationSuccessful() {
-        Integer userId = 1;
-        Integer activationCode = 12345;
-        user.setActivateNum(activationCode);
-        user.setActivated(false);
-        
-        Optional<User> userOptional = Optional.of(user);
-        
-        when(userRepo.findById(userId)).thenReturn(userOptional);
-
-        String result = userService.activateCode(userId, activationCode);
-
-        assertEquals("login", result);
-        assertTrue(user.isActivated());
-        verify(userRepo, times(1)).save(user);
-    }
 
-    @Test
-    public void test_activateCode_ActivationFailed() {
-        Integer userId = 1;
-        Integer activationCode = 12345;
-        user.setActivateNum(activationCode);
-        user.setActivated(false);
-        
-        Optional<User> userOptional = Optional.of(user);
-        
-        when(userRepo.findById(userId)).thenReturn(userOptional);
-
-        String result = userService.activateCode(userId, 54321);
-
-        assertEquals("activate", result);
-        assertFalse(user.isActivated());
-        verify(userRepo, never()).save(user);
-    }
-    
-    @WithMockUser
-  @Test
-    public void test_checkInfo_AdminUser() {
- 
-        Role adminRole = new Role();
-        adminRole.setRolename("Admin");
-        user.setRole(adminRole);
-        
-        Optional<User> userOptional = Optional.of(user);
-
-        ModelMap model = new ModelMap();
-
-        when(userRepo.findByUsername(anyString())).thenReturn(userOptional);
-
-        userService.checkInfo(model);
+	// ---------------------------------------------------------------------------------------------
 
-        assertTrue((Boolean) model.get("checkInfo"));
-    }
-@WithMockUser
-    @Test
-    public void test_checkInfo_NonAdminUser() {
-        Role regularRole = new Role();
-        regularRole.setRolename("Customer");
-        user.setRole(regularRole);
-        
-        Optional<User> userOptional = Optional.of(user);
+	@Test
+	public void test_optionalIsPresent_UserExists() {
 
-        ModelMap model = new ModelMap();
-
-        when(userRepo.findByUsername(anyString())).thenReturn(userOptional);
-
-        userService.checkInfo(model);
-
-        assertFalse((Boolean) model.get("checkInfo"));
-    }
-
-@WithMockUser
-  @Test
-    public void test_currentUserFrom_CurrentUserIsMessageSender() {
-        user.setUsername("currentUser");
-
-        User messageSender = new User();
-        messageSender.setUsername("messageSender");
-
-        MessageSend message = new MessageSend();
-        message.setFrom(user);
-
-        when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(user));
-
-        boolean result = userService.currentUserFrom(message);
-
-        assertTrue(result);
-    }
-@WithMockUser
-    @Test
-    public void test_currentUserFrom_CurrentUserIsNotMessageSender() {
-        user.setUsername("currentUser");
-
-        User messageSender = new User();
-        messageSender.setUsername("messageSender");
+		Optional<User> userOptional = Optional.of(user);
 
-        MessageSend message = new MessageSend();
-        message.setFrom(messageSender);
+		boolean result = userService.optionalIsPresent(userOptional);
 
-        when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(user));
+		assertTrue(result);
+	}
 
-        boolean result = userService.currentUserFrom(message);
+	// ---------------------------------------------------------------------------------------------
 
-        assertFalse(result);
-    }
+	@Test
+	public void test_optionalIsPresent_UserDoesNotExist() {
+		Optional<User> userOptional = Optional.empty();
 
-    @Test
-    public void test_findAll() {
-        User user1 = new User();
-        List<User> userList = Arrays.asList(user, user1);
+		boolean result = userService.optionalIsPresent(userOptional);
 
-        when(userRepo.findAll()).thenReturn(userList);
+		assertFalse(result);
+	}
 
-        List<User> result = userService.findAll();
+	// ---------------------------------------------------------------------------------------------
 
-        assertEquals(2, result.size());
-        verify(userRepo, times(1)).findAll();
-    }
-    
-    @WithMockUser
- @Test
-    public void test_populateUser_UserLogged() {
-        user.setUsername("testUser");
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setEmail("john.doe@example.com");
-        user.setPhoneNumber("123-456-7890");
-        Optional<User> optUser = Optional.of(user);
+	@Test
+	public void test_getOptUser_UserExists() {
+		String username = "testUser";
+		user.setUsername(username);
 
-        when(userRepo.findByUsername(anyString())).thenReturn(optUser);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		Authentication authentication = mock(Authentication.class);
 
-        ModelMap model = new ModelMap();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		when(authentication.getName()).thenReturn(username);
 
-        userService.populateUser(model);
+		SecurityContextHolder.setContext(securityContext);
 
-        assertEquals("testUser", model.get("userUsername"));
-        assertEquals("John", model.get("userFirstName"));
-        assertEquals("Doe", model.get("userLastName"));
-        assertEquals("john.doe@example.com", model.get("userEmail"));
-        assertEquals("123-456-7890", model.get("userPhoneNumber"));
-    }
+		when(userRepo.findByUsername(username)).thenReturn(Optional.of(user));
 
-    @WithMockUser
-@Test
-    public void test_populateUser_UserNotLogged() {
+		Optional<User> result = userService.getOptUser();
 
-        Optional<User> optUser = Optional.of(user);
+		assertTrue(result.isPresent());
+		assertEquals(username, result.get().getUsername());
+		verify(userRepo, times(1)).findByUsername(username);
+	}
 
-      when(userRepo.findByUsername(anyString())).thenReturn(optUser);
+	// ---------------------------------------------------------------------------------------------
 
-        ModelMap model = new ModelMap();
+	@Test
+	public void test_getOptUser_UserDoesNotExist() {
+		String username = "nonExistentUser";
 
-        userService.populateUser(model);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		Authentication authentication = mock(Authentication.class);
 
-        assertNull(model.get("userUsername"));
-        assertNull(model.get("userFirstName"));
-        assertNull(model.get("userLastName"));
-        assertNull(model.get("userEmail"));
-        assertNull(model.get("userPhoneNumber"));
-    }
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		when(authentication.getName()).thenReturn(username);
 
-    @Test
-    public void test_randomNumber_find() {
-    	int howManyTests = 100;
-    	
-    	for(int i =0;i < howManyTests;i++) {
-        Integer actNum = userService.randomNumber_find();
+		SecurityContextHolder.setContext(securityContext);
 
-        assertTrue(actNum >= 100000 && actNum <= 999999);
-    	}
-    }
-    
-    @Test
-    public void test_registerNew_SuccessfulRegistration() {
-        user.setUsername("testUser");
-        user.setRole(new Role());
-        String newPassword = "newPassword";
+		when(userRepo.findByUsername(username)).thenReturn(Optional.empty());
 
-        when(roleService.findByRoleName("Customer")).thenReturn(new Role());
+		Optional<User> result = userService.getOptUser();
 
+		assertFalse(result.isPresent());
+		verify(userRepo, times(1)).findByUsername(username);
+	}
 
-        String result = userService.registerNew(user, newPassword);
+	// ---------------------------------------------------------------------------------------------
 
-        assertEquals("activate", result);
-        verify(userRepo, times(1)).save(user);
-    }
+	@WithMockUser
+	@Test
+	public void test_checkIfUserLogged_UserLogged() {
+		Optional<User> userOptional = Optional.of(user);
 
-    @Test
-    public void test_alreadyExist_UserExists() {
-        user.setUsername("testUser");
+		when(userService.getOptUser()).thenReturn(userOptional);
 
-        when(userRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+		boolean result = userService.checkIfUserLogged();
 
-        boolean result = userService.alreadyExist(user);
+		assertTrue(result);
+	}
 
-        assertTrue(result);
-    }
+	// ---------------------------------------------------------------------------------------------
 
-    @Test
-    public void test_alreadyExist_UserDoesNotExist() {
-        when(userRepo.findByUsername("nonExistentUser")).thenReturn(Optional.empty());
-        
-        boolean result = userService.alreadyExist(new User());
+	@WithMockUser
+	@Test
+	public void test_checkIfUserLogged_UserNotLogged() {
+		Optional<User> userOptional = Optional.empty();
 
-        assertFalse(result);
-    }
+		when(userService.getOptUser()).thenReturn(userOptional);
 
-    @Test
-    public void test_checkPassword_PasswordMatches() {
-        user.setPassword("password");
+		boolean result = userService.checkIfUserLogged();
 
-        boolean result = userService.checkPassword(user, "password");
+		assertFalse(result);
+	}
 
-        assertTrue(result);
-    }
+	// ---------------------------------------------------------------------------------------------
 
-    @WithMockUser
- @Test
-    public void test_checkPassword_PasswordDoesNotMatch() {
-        user.setPassword("password");
+	@Test
+	public void test_activateCode_ActivationSuccessful() {
+		Integer userId = 1;
+		Integer activationCode = 12345;
+		user.setActivateNum(activationCode);
+		user.setActivated(false);
 
-        boolean result = userService.checkPassword(user, "wrongPassword");
+		Optional<User> userOptional = Optional.of(user);
 
-        assertFalse(result);
-    }
+		when(userRepo.findById(userId)).thenReturn(userOptional);
+
+		String result = userService.activateCode(userId, activationCode);
+
+		assertEquals("login", result);
+		assertTrue(user.isActivated());
+		verify(userRepo, times(1)).save(user);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@Test
+	public void test_activateCode_ActivationFailed() {
+		Integer userId = 1;
+		Integer activationCode = 12345;
+		user.setActivateNum(activationCode);
+		user.setActivated(false);
+
+		Optional<User> userOptional = Optional.of(user);
+
+		when(userRepo.findById(userId)).thenReturn(userOptional);
+
+		String result = userService.activateCode(userId, 54321);
+
+		assertEquals("activate", result);
+		assertFalse(user.isActivated());
+		verify(userRepo, never()).save(user);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
+	@Test
+	public void test_checkInfo_AdminUser() {
+
+		Role adminRole = new Role();
+		adminRole.setRolename("Admin");
+		user.setRole(adminRole);
+
+		Optional<User> userOptional = Optional.of(user);
+
+		ModelMap model = new ModelMap();
+
+		when(userRepo.findByUsername(anyString())).thenReturn(userOptional);
+
+		userService.checkInfo(model);
+
+		assertTrue((Boolean) model.get("checkInfo"));
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
+	@Test
+	public void test_checkInfo_NonAdminUser() {
+		Role regularRole = new Role();
+		regularRole.setRolename("Customer");
+		user.setRole(regularRole);
+
+		Optional<User> userOptional = Optional.of(user);
+
+		ModelMap model = new ModelMap();
+
+		when(userRepo.findByUsername(anyString())).thenReturn(userOptional);
+
+		userService.checkInfo(model);
+
+		assertFalse((Boolean) model.get("checkInfo"));
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
+	@Test
+	public void test_currentUserFrom_CurrentUserIsMessageSender() {
+		user.setUsername("currentUser");
+
+		User messageSender = new User();
+		messageSender.setUsername("messageSender");
+
+		MessageSend message = new MessageSend();
+		message.setFrom(user);
+
+		when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(user));
+
+		boolean result = userService.currentUserFrom(message);
+
+		assertTrue(result);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
+	@Test
+	public void test_currentUserFrom_CurrentUserIsNotMessageSender() {
+		user.setUsername("currentUser");
+
+		User messageSender = new User();
+		messageSender.setUsername("messageSender");
+
+		MessageSend message = new MessageSend();
+		message.setFrom(messageSender);
+
+		when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(user));
+
+		boolean result = userService.currentUserFrom(message);
+
+		assertFalse(result);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@Test
+	public void test_findAll() {
+		User user1 = new User();
+		List<User> userList = Arrays.asList(user, user1);
+
+		when(userRepo.findAll()).thenReturn(userList);
+
+		List<User> result = userService.findAll();
+
+		assertEquals(2, result.size());
+		verify(userRepo, times(1)).findAll();
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
+	@Test
+	public void test_populateUser_UserLogged() {
+		user.setUsername("testUser");
+		user.setFirstName("John");
+		user.setLastName("Doe");
+		user.setEmail("john.doe@example.com");
+		user.setPhoneNumber("123-456-7890");
+		Optional<User> optUser = Optional.of(user);
+
+		when(userRepo.findByUsername(anyString())).thenReturn(optUser);
+
+		ModelMap model = new ModelMap();
+
+		userService.populateUser(model);
+
+		assertEquals("testUser", model.get("userUsername"));
+		assertEquals("John", model.get("userFirstName"));
+		assertEquals("Doe", model.get("userLastName"));
+		assertEquals("john.doe@example.com", model.get("userEmail"));
+		assertEquals("123-456-7890", model.get("userPhoneNumber"));
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
+	@Test
+	public void test_populateUser_UserNotLogged() {
+
+		Optional<User> optUser = Optional.of(user);
+
+		when(userRepo.findByUsername(anyString())).thenReturn(optUser);
+
+		ModelMap model = new ModelMap();
+
+		userService.populateUser(model);
+
+		assertNull(model.get("userUsername"));
+		assertNull(model.get("userFirstName"));
+		assertNull(model.get("userLastName"));
+		assertNull(model.get("userEmail"));
+		assertNull(model.get("userPhoneNumber"));
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@Test
+	public void test_randomNumber_find() {
+		int howManyTests = 100;
+
+		for (int i = 0; i < howManyTests; i++) {
+			Integer actNum = userService.randomNumber_find();
+
+			assertTrue(actNum >= 100000 && actNum <= 999999);
+		}
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@Test
+	public void test_registerNew_SuccessfulRegistration() {
+		user.setUsername("testUser");
+		user.setRole(new Role());
+		String newPassword = "newPassword";
+
+		when(roleService.findByRoleName("Customer")).thenReturn(new Role());
+
+		String result = userService.registerNew(user, newPassword);
+
+		assertEquals("activate", result);
+		verify(userRepo, times(1)).save(user);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@Test
+	public void test_alreadyExist_UserExists() {
+		user.setUsername("testUser");
+
+		when(userRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
+
+		boolean result = userService.alreadyExist(user);
+
+		assertTrue(result);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@Test
+	public void test_alreadyExist_UserDoesNotExist() {
+		when(userRepo.findByUsername("nonExistentUser")).thenReturn(Optional.empty());
+
+		boolean result = userService.alreadyExist(new User());
+
+		assertFalse(result);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@Test
+	public void test_checkPassword_PasswordMatches() {
+		user.setPassword("password");
+
+		boolean result = userService.checkPassword(user, "password");
+
+		assertTrue(result);
+	}
+
+	// ---------------------------------------------------------------------------------------------
+
+	@WithMockUser
+	@Test
+	public void test_checkPassword_PasswordDoesNotMatch() {
+		user.setPassword("password");
+
+		boolean result = userService.checkPassword(user, "wrongPassword");
+
+		assertFalse(result);
+	}
 }
