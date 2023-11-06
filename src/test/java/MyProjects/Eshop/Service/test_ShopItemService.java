@@ -207,7 +207,6 @@ public class test_ShopItemService {
 
 	@Test
 	public void test_createNewItem() throws IOException {
-		// Arrange
 		String name = "Test Item";
 		String description = "Test Description";
 		String category = "Test Category";
