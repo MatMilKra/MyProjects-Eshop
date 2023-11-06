@@ -19,6 +19,7 @@ import java.util.Optional;
 import org.springframework.security.core.Authentication;
 //import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -55,48 +56,51 @@ public class test_UserService {
 	private RoleService roleService;
 	@MockBean
 	ModelMap model;
+	User user;
+
+	@BeforeEach
+	void setUp() {
+		user = new User();
+
+	}
 
 	@Test
 	public void test_save() {
-		User user = new User();
 		userService.save(user);
-		Mockito.verify(userRepo).save(user);
+		verify(userRepo).save(user);
 	}
 
 	@Test
 	public void test_updateUser() {
 		User user1 = new User();
-		User user2 = new User();
-		userService.updateUser(user1, user2);
-		Mockito.verify(userRepo, times(1)).save(user2);
+		userService.updateUser(user, user1);
+		verify(userRepo, times(1)).save(user1);
 
 	}
 
 	@Test
 	public void test_findById() {
 		userService.findById(1);
-		Mockito.verify(userRepo).findById(1);
+		verify(userRepo).findById(1);
 
 	}
 
 	@Test
 	public void test_setRole() {
 		Role role = new Role();
-		User user = new User("a", "b", "c", "d", "e", role);
+		 user = new User("a", "b", "c", "d", "e", role);
 		Optional<User> userOp = Optional.of(user);
 
-		Mockito.when(userRepo.findById(Mockito.anyInt())).thenReturn(userOp);
-		Mockito.when(roleRepo.findByRolename(Mockito.anyString())).thenReturn(role);
+		when(userRepo.findById(Mockito.anyInt())).thenReturn(userOp);
+		when(roleRepo.findByRolename(Mockito.anyString())).thenReturn(role);
 		userService.setRole(1, "role");
-		Mockito.verify(userRepo).save(user);
+		verify(userRepo).save(user);
 	}
 @WithMockUser
 	@Test
 	public void test_loadUserByUsername_UserExists() {
-		// Arrange
 		String username = "testUser";
-		User user = new User();
-		user.setUsername(username);
+	user.setUsername(username);
 
 		when(userRepo.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -124,7 +128,6 @@ public class test_UserService {
 	@Test
 	public void test_findByUsername_UserExists() {
 		String username = "testUser";
-		User user = new User();
 		user.setUsername(username);
 
 		when(userRepo.findByUsername(username)).thenReturn(Optional.of(user));
@@ -151,7 +154,6 @@ public class test_UserService {
 	@Test
 	public void test_getCurrentUser_UserExists() {
 		String username = "testUser";
-		User user = new User();
 		user.setUsername(username);
 
 		SecurityContext securityContext = mock(SecurityContext.class);
@@ -192,8 +194,7 @@ public class test_UserService {
 	
     @Test
     public void test_optionalIsPresent_UserExists() {
-        User user = new User();
-        
+       
         Optional<User> userOptional = Optional.of(user);
 
         boolean result = userService.optionalIsPresent(userOptional);
@@ -213,7 +214,6 @@ public class test_UserService {
     @Test
     public void test_getOptUser_UserExists() {
         String username = "testUser";
-        User user = new User();
         user.setUsername(username);
 
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -256,7 +256,6 @@ public class test_UserService {
     @WithMockUser
  @Test
     public void test_checkIfUserLogged_UserLogged() {
-        User user = new User();
         Optional<User> userOptional = Optional.of(user);
         
         when(userService.getOptUser()).thenReturn(userOptional);
@@ -281,7 +280,6 @@ public class test_UserService {
     public void test_activateCode_ActivationSuccessful() {
         Integer userId = 1;
         Integer activationCode = 12345;
-        User user = new User();
         user.setActivateNum(activationCode);
         user.setActivated(false);
         
@@ -300,7 +298,6 @@ public class test_UserService {
     public void test_activateCode_ActivationFailed() {
         Integer userId = 1;
         Integer activationCode = 12345;
-        User user = new User();
         user.setActivateNum(activationCode);
         user.setActivated(false);
         
@@ -318,12 +315,12 @@ public class test_UserService {
     @WithMockUser
   @Test
     public void test_checkInfo_AdminUser() {
-        User adminUser = new User();
+ 
         Role adminRole = new Role();
         adminRole.setRolename("Admin");
-        adminUser.setRole(adminRole);
+        user.setRole(adminRole);
         
-        Optional<User> userOptional = Optional.of(adminUser);
+        Optional<User> userOptional = Optional.of(user);
 
         ModelMap model = new ModelMap();
 
@@ -336,12 +333,11 @@ public class test_UserService {
 @WithMockUser
     @Test
     public void test_checkInfo_NonAdminUser() {
-        User regularUser = new User();
         Role regularRole = new Role();
         regularRole.setRolename("Customer");
-        regularUser.setRole(regularRole);
+        user.setRole(regularRole);
         
-        Optional<User> userOptional = Optional.of(regularUser);
+        Optional<User> userOptional = Optional.of(user);
 
         ModelMap model = new ModelMap();
 
@@ -355,16 +351,15 @@ public class test_UserService {
 @WithMockUser
   @Test
     public void test_currentUserFrom_CurrentUserIsMessageSender() {
-        User currentUser = new User();
-        currentUser.setUsername("currentUser");
+        user.setUsername("currentUser");
 
         User messageSender = new User();
         messageSender.setUsername("messageSender");
 
         MessageSend message = new MessageSend();
-        message.setFrom(currentUser);
+        message.setFrom(user);
 
-        when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(currentUser));
+        when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(user));
 
         boolean result = userService.currentUserFrom(message);
 
@@ -373,8 +368,7 @@ public class test_UserService {
 @WithMockUser
     @Test
     public void test_currentUserFrom_CurrentUserIsNotMessageSender() {
-        User currentUser = new User();
-        currentUser.setUsername("currentUser");
+        user.setUsername("currentUser");
 
         User messageSender = new User();
         messageSender.setUsername("messageSender");
@@ -382,7 +376,7 @@ public class test_UserService {
         MessageSend message = new MessageSend();
         message.setFrom(messageSender);
 
-        when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(currentUser));
+        when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(user));
 
         boolean result = userService.currentUserFrom(message);
 
@@ -392,8 +386,7 @@ public class test_UserService {
     @Test
     public void test_findAll() {
         User user1 = new User();
-        User user2 = new User();
-        List<User> userList = Arrays.asList(user1, user2);
+        List<User> userList = Arrays.asList(user, user1);
 
         when(userRepo.findAll()).thenReturn(userList);
 
@@ -406,14 +399,12 @@ public class test_UserService {
     @WithMockUser
  @Test
     public void test_populateUser_UserLogged() {
-        User user = new User();
         user.setUsername("testUser");
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john.doe@example.com");
         user.setPhoneNumber("123-456-7890");
         Optional<User> optUser = Optional.of(user);
-//        when(userService.checkIfUserLogged()).thenReturn(true);
 
         when(userRepo.findByUsername(anyString())).thenReturn(optUser);
 
@@ -431,12 +422,10 @@ public class test_UserService {
     @WithMockUser
 @Test
     public void test_populateUser_UserNotLogged() {
-        User user = new User();
 
         Optional<User> optUser = Optional.of(user);
 
       when(userRepo.findByUsername(anyString())).thenReturn(optUser);
-//        when(userService.checkIfUserLogged()).thenReturn(false);
 
         ModelMap model = new ModelMap();
 
@@ -462,14 +451,12 @@ public class test_UserService {
     
     @Test
     public void test_registerNew_SuccessfulRegistration() {
-        User user = new User();
         user.setUsername("testUser");
         user.setRole(new Role());
         String newPassword = "newPassword";
 
         when(roleService.findByRoleName("Customer")).thenReturn(new Role());
 
-//        when(userService.randomNumber_find()).thenReturn(12345);
 
         String result = userService.registerNew(user, newPassword);
 
@@ -479,7 +466,6 @@ public class test_UserService {
 
     @Test
     public void test_alreadyExist_UserExists() {
-        User user = new User();
         user.setUsername("testUser");
 
         when(userRepo.findByUsername("testUser")).thenReturn(Optional.of(user));
@@ -500,7 +486,6 @@ public class test_UserService {
 
     @Test
     public void test_checkPassword_PasswordMatches() {
-        User user = new User();
         user.setPassword("password");
 
         boolean result = userService.checkPassword(user, "password");
@@ -511,7 +496,6 @@ public class test_UserService {
     @WithMockUser
  @Test
     public void test_checkPassword_PasswordDoesNotMatch() {
-        User user = new User();
         user.setPassword("password");
 
         boolean result = userService.checkPassword(user, "wrongPassword");
