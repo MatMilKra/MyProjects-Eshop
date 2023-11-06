@@ -42,50 +42,49 @@ public class MailServiceImplementation implements MailService {
 	String password = "examplePassword";
 
 	/**
-	 * To make this method working, you must change emailNote, host, login and password for correct.
-	 * Probably you should also change SNTP port in properties inside the method.
+	 * To make this method working, you must change emailNote, host, login and
+	 * password for correct. Probably you should also change SNTP port in properties
+	 * inside the method.
 	 */
 	@Override
 	public void sendMail(PreparedMail mail) {
-//			String to, String subject, String body) {
-		
-		
-		String from = emailNote; 
 
-		Properties properties = new Properties();
-		properties.put("mail.smtp.host", host);
-		properties.put("mail.smtp.port", "465");
-		properties.put("mail.smtp.ssl.enable", "true");
-		properties.put("mail.smtp.auth", "true");
-
-		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.EnableSSL.enable", "true");
-
-		properties.put("mail.debug", "true");
-
-		properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		properties.setProperty("mail.smtp.socketFactory.fallback", "false");
-		properties.setProperty("mail.smtp.port", "465");
-		properties.setProperty("mail.smtp.sender.address", from);
-		properties.setProperty("mail.smtp.socketFactory.port", "465");
-
-		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(login,password);
-			}
-		});
-
-		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(from));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getTo()));
-			message.setSubject(mail.getSubject());
-			message.setText(mail.getBody());
-
-			Transport.send(message);
-		} catch (MessagingException mex) {
-			mex.printStackTrace();
-		}
+//		String from = emailNote; 
+//
+//		Properties properties = new Properties();
+//		properties.put("mail.smtp.host", host);
+//		properties.put("mail.smtp.port", "465");
+//		properties.put("mail.smtp.ssl.enable", "true");
+//		properties.put("mail.smtp.auth", "true");
+//
+//		properties.put("mail.smtp.starttls.enable", "true");
+//		properties.put("mail.smtp.EnableSSL.enable", "true");
+//
+//		properties.put("mail.debug", "true");
+//
+//		properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//		properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+//		properties.setProperty("mail.smtp.port", "465");
+//		properties.setProperty("mail.smtp.sender.address", from);
+//		properties.setProperty("mail.smtp.socketFactory.port", "465");
+//
+//		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+//			protected PasswordAuthentication getPasswordAuthentication() {
+//				return new PasswordAuthentication(login,password);
+//			}
+//		});
+//
+//		try {
+//			MimeMessage message = new MimeMessage(session);
+//			message.setFrom(new InternetAddress(from));
+//			message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getTo()));
+//			message.setSubject(mail.getSubject());
+//			message.setText(mail.getBody());
+//
+//			Transport.send(message);
+//		} catch (MessagingException mex) {
+//			mex.printStackTrace();
+//		}
 
 	}
 
@@ -95,61 +94,40 @@ public class MailServiceImplementation implements MailService {
 		String body = "New user has been register: " + "\n" + user.getFirstName() + " " + user.getLastName()
 				+ ", telefon: " + user.getPhoneNumber() + ", email: " + user.getEmail();
 
-//		sendMail(emailNote, subject, body);
 		return new PreparedMail(emailNote, subject, body);
 	}
 
 	@Override
 	public PreparedMail prepareActivateCode(User user) {
-	
-			String email = user.getEmail();
-			Integer actCode = user.getActivateNum();
-			String subject = "Activation code";
-			String body = "Your actiation code is: " + actCode;
 
-//			sendMail(email, subject, body);
-			return new PreparedMail(email, subject, body);
+		String email = user.getEmail();
+		Integer actCode = user.getActivateNum();
+		String subject = "Activation code";
+		String body = "Your actiation code is: " + actCode;
+
+		return new PreparedMail(email, subject, body);
 
 	}
-
-
-	
-	
-
-
 
 	@Override
-	public PreparedMail newMessageResponse(String date, String firstName, String lastName, String email, String phoneNumber,
-			String subject, String body) {
-		
+	public PreparedMail newMessageResponse(String date, String firstName, String lastName, String email,
+			String phoneNumber, String subject, String body) {
+
 		String subject2 = "Your message has been send";
-		String body2 = "Thank you for your message. We will respond as soon as possible.\n \n"
-				+ "Date: " + date + "\n" + 
-				"From: " + firstName + " " + lastName + "\n" + 
-				"Email: " + email + "\n" +
-				"Telephone: " + phoneNumber + "\n" +
-				"Subject: " + subject	+ "\n" + 
-				"-----------------------\n " + body;
+		String body2 = "Thank you for your message. We will respond as soon as possible.\n \n" + "Date: " + date + "\n"
+				+ "From: " + firstName + " " + lastName + "\n" + "Email: " + email + "\n" + "Telephone: " + phoneNumber
+				+ "\n" + "Subject: " + subject + "\n" + "-----------------------\n " + body;
 		return new PreparedMail(email, subject, body);
 	}
-//		sendMail(email, subject2, body2);
-		@Override
-		public PreparedMail newMessageInfo(String date, String firstName, String lastName, String email, String phoneNumber,
-				String subject, String body) {
+
+	@Override
+	public PreparedMail newMessageInfo(String date, String firstName, String lastName, String email, String phoneNumber,
+			String subject, String body) {
 		String subject1 = "New message";
-		String body3 = "\n" + "Date: " + date + "\n" + 
-				"From: " + firstName + " " + lastName + "\n" + 
-				"Email: " + email + "\n" +
-				"Telephone: " + phoneNumber + "\n" +
-				"Subject: " + subject	+ "\n" + 
-				"-----------------------\n " + body;
+		String body3 = "\n" + "Date: " + date + "\n" + "From: " + firstName + " " + lastName + "\n" + "Email: " + email
+				+ "\n" + "Telephone: " + phoneNumber + "\n" + "Subject: " + subject + "\n"
+				+ "-----------------------\n " + body;
 		return new PreparedMail(emailNote, subject1, body);
-
-//		sendMail(emailNote, subject3, body3);
 	}
-
-
-
-
 
 }
