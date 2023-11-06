@@ -39,11 +39,15 @@ public class test_SearchingService {
 	ModelMap model;
 	
 	User user;
-	
-	
+	String searchTab="searchTab"; 
+	String category="Guitar";
+	String priceMin="10";
+	String priceMax="20";
+	List<ShopItem> items;
 	@BeforeEach
 	public void newUser() {
 		user=new User();
+		items = new ArrayList<>();
 	}
 	
 	@Test
@@ -67,16 +71,12 @@ public class test_SearchingService {
 	}
 	@Test
 	public void test_findItem() {
-		String searchTab="searchTab"; 
-		String category="Guitar";
-		String priceMin="10";
 		Double priceMinD=Double.parseDouble(priceMin);
-		String priceMax="20";
 		Double priceMaxD=Double.parseDouble(priceMax);
 
 		ShopItem item = new ShopItem();
-		List<ShopItem> items = new ArrayList<>();
-		//items.add(item);
+	
+		items.add(item);
 		when(shopRepo.findByNameContainsIgnoreCase(searchTab)).thenReturn(items);
 		Mockito.when(shopRepo.findByDescriptionContainsIgnoreCase(searchTab)).thenReturn(items);
 		Mockito.when(shopRepo.findByCategoryContainsIgnoreCase(category)).thenReturn(items);
@@ -88,21 +88,15 @@ assertEquals(items,find);
 	
 	@Test
 	public void test_findItem_badPriceMin() {
-		String searchTab="searchTab"; 
-		String category="Guitar";
 		String priceMin="xyz";
-		String priceMax="20";
-		List<ShopItem> items = new ArrayList<>();
+
 		List<ShopItem> find = searchingService.findItem(model, searchTab, category, priceMin, priceMax);
 		assertEquals(items,find);
 	}
 	@Test
 	public void test_findItem_badPriceMax() {
-		String searchTab="searchTab"; 
-		String category="Guitar";
-		String priceMin="10";
 		String priceMax="xyz";
-		List<ShopItem> items = new ArrayList<>();
+
 		List<ShopItem> find = searchingService.findItem(model, searchTab, category, priceMin, priceMax);
 		assertEquals(items,find);
 	}

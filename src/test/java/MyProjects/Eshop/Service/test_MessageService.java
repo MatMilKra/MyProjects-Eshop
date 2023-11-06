@@ -1,10 +1,12 @@
 package MyProjects.Eshop.Service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,10 +24,18 @@ public class test_MessageService {
 	MessageSendRepository messRepo;
 	@InjectMocks
 	private MessagesServiceImplementation messServ;
-	
+	User user;
+	DateTimeFormatter dtf;
+	LocalDateTime now;
+	@BeforeEach
+	void setUp() {
+		user = new User();
+		 dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		 now = LocalDateTime.now();
+	}
 	@Test
 	public void test_findReceiver() {
-		User user = new User();
+	
 		messServ.findReceived(user);
 		Mockito.verify(messRepo).findByTo(user);
 		
@@ -33,7 +43,6 @@ public class test_MessageService {
 	
 	@Test
 	public void test_findSent() {
-		User user = new User();
 		messServ.findSent(user);
 		Mockito.verify(messRepo).findByFrom(user);
 		
@@ -49,8 +58,6 @@ public class test_MessageService {
 	@Test
 	public void test_findDate() {
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		LocalDateTime now = LocalDateTime.now();
 		String data=messServ.findDate();
 		assertEquals(dtf.format(now), data);
 	}
@@ -58,17 +65,14 @@ public class test_MessageService {
 	@Test
 	public void test_sendMessage() {
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		LocalDateTime now = LocalDateTime.now();
 		String date = dtf.format(now);
 		User user1=new User();
-		User user2=new User();
 		String sub = "";
 		String body = "";
 	//	Mockito.when(messServ.findDate()).thenReturn(date);
-		MessageSend message = new MessageSend(date,user1,user2,sub,body);
-		messServ.sendMessage(user1, user2, sub, body);
-	Mockito.verify(messRepo).save(message);
+		MessageSend message = new MessageSend(date,user,user1,sub,body);
+		messServ.sendMessage(user, user1, sub, body);
+	verify(messRepo).save(message);
 	
 	}
 }

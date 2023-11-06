@@ -65,6 +65,9 @@ public class ShopItemsController {
 
 	}
 
+	private void populateModel(ModelMap model) {
+		model.addAttribute("items", searchingService.findAllItems());
+	}
 	public void setCategories(ModelMap model) {
 		model.addAttribute("categories", categories);
 
@@ -89,17 +92,15 @@ public class ShopItemsController {
 
 		if (!shopItemService.parseDoublePossible(price)) {
 			model.addAttribute("message", "Invalid price");
-			return "/add";
 		} else if (!shopItemService.parseIntegerPossible(amount)) {
 			model.addAttribute("message", "Invalid amount");
-			return "/add";
 		}
-
+		else {
 		shopItemService.createNewItem(name, description, category, Double.parseDouble(price),
 				Integer.parseInt(amount), owner, imageFile);
 		model.addAttribute("message", "Item has been added");
 		populateModel(model);
-
+		}
 		return "/add";
 	}
 
@@ -124,10 +125,6 @@ public class ShopItemsController {
 
 		setCategories(model);
 		return "search";
-	}
-
-	private void populateModel(ModelMap model) {
-		model.addAttribute("items", searchingService.findAllItems());
 	}
 
 	@GetMapping(value = "/item/{id}")
