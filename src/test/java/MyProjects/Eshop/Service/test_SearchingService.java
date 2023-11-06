@@ -37,69 +37,71 @@ public class test_SearchingService {
 	private UserRepository userRepo;
 	@MockBean
 	ModelMap model;
-	
+
 	User user;
-	String searchTab="searchTab"; 
-	String category="Guitar";
-	String priceMin="10";
-	String priceMax="20";
+	String searchTab = "searchTab";
+	String category = "Guitar";
+	String priceMin = "10";
+	String priceMax = "20";
 	List<ShopItem> items;
+
 	@BeforeEach
 	public void newUser() {
-		user=new User();
+		user = new User();
 		items = new ArrayList<>();
 	}
-	
+
 	@Test
 	public void test_findAall() {
 		searchingService.findAllItems();
 		Mockito.verify(shopRepo).findAll();
 	}
-	
+
 	@Test
 	public void test_findById() {
 		int id = 1;
 		searchingService.findById(id);
 		Mockito.verify(shopRepo).findById(id);
-		
+
 	}
-	
+
 	@Test
 	public void test_filterByVendor() {
 		searchingService.filterByVendor(user);
 		Mockito.verify(shopRepo).findByVendor(user);
 	}
+
 	@Test
 	public void test_findItem() {
-		Double priceMinD=Double.parseDouble(priceMin);
-		Double priceMaxD=Double.parseDouble(priceMax);
+		Double priceMinD = Double.parseDouble(priceMin);
+		Double priceMaxD = Double.parseDouble(priceMax);
 
 		ShopItem item = new ShopItem();
-	
+
 		items.add(item);
 		when(shopRepo.findByNameContainsIgnoreCase(searchTab)).thenReturn(items);
 		Mockito.when(shopRepo.findByDescriptionContainsIgnoreCase(searchTab)).thenReturn(items);
 		Mockito.when(shopRepo.findByCategoryContainsIgnoreCase(category)).thenReturn(items);
 		Mockito.when(shopRepo.findByPriceGreaterThanEqual(priceMinD)).thenReturn(items);
 		Mockito.when(shopRepo.findByPriceLessThanEqual(priceMaxD)).thenReturn(items);
-List<ShopItem> find = searchingService.findItem(model, searchTab, category, priceMin, priceMax);
-assertEquals(items,find);
+		List<ShopItem> find = searchingService.findItem(model, searchTab, category, priceMin, priceMax);
+		assertEquals(items, find);
 	}
-	
+
 	@Test
 	public void test_findItem_badPriceMin() {
-		String priceMin="xyz";
+		String priceMin = "xyz";
 
 		List<ShopItem> find = searchingService.findItem(model, searchTab, category, priceMin, priceMax);
-		assertEquals(items,find);
+		assertEquals(items, find);
 	}
+
 	@Test
 	public void test_findItem_badPriceMax() {
-		String priceMax="xyz";
+		String priceMax = "xyz";
 
 		List<ShopItem> find = searchingService.findItem(model, searchTab, category, priceMin, priceMax);
-		assertEquals(items,find);
+		assertEquals(items, find);
 	}
-	
 
 }

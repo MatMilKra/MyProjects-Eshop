@@ -12,7 +12,7 @@ import MyProjects.Eshop.Model.User;
 public class test_MailService {
 	@InjectMocks
 	private MailServiceImplementation mailServ;
-	
+
 	@Test
 	public void test_newUser() {
 		User user = new User();
@@ -20,28 +20,29 @@ public class test_MailService {
 		user.setLastName("B");
 		user.setEmail("a@b.c");
 		user.setPhoneNumber("123");
-		mailServ.newUser(user);		
+		mailServ.newUser(user);
 	}
-	
+
 	@Test
 	public void test_sendActivateCode() {
 		User user = new User();
 
 		user.setEmail("a@b.c");
 		user.setActivateNum(123);
-		mailServ.sendActivateCode(user);		
+		
+		mailServ.sendActivateCode(user);
 	}
-	
+
 	@Test
 	public void test_newMessage() {
-		
-		mailServ.newMessage("a", "b","c", "d@e.f", "g", "h","i");
+
+		mailServ.newMessage("a", "b", "c", "d@e.f", "g", "h", "i");
 	}
-	
+
 	@Test
 	public void test_sensMessage() {
-		
-		mailServ.sendMail("d@e.f", "h","i");
+
+		mailServ.sendMail("d@e.f", "h", "i");
 	}
-	
+
 }
